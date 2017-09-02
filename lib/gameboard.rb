@@ -10,7 +10,7 @@ class GameBoard
 	attr_accessor :positions, :player1, :player2, :turn_counter
 
 	def initialize
-		@positions = Array.new(8) { Array.new(8, " ") }
+		@positions = Array.new(8) { Array.new(8, nil) }
 		@player1 = nil
 		@player2 = nil
 		@turn_counter = 1
@@ -18,7 +18,31 @@ class GameBoard
 	end
 
 	def place_pieces
-		# creates all piece instances and places them in their default starting position
+		@positions[7][0] = Rook.new([7,0], true)
+		@positions[7][1] = Knight.new([7,1], true)
+		@positions[7][2] = Bishop.new([7,2], true)
+		@positions[7][3] = Queen.new([7,3], true)
+		@positions[7][4] = King.new([7,4], true)
+		@positions[7][5] = Bishop.new([7,5], true)
+		@positions[7][6] = Knight.new([7,6], true)
+		@positions[7][7] = Rook.new([7,7], true)
+
+		0.upto(7) do |x|
+			@positions[6][x] = Pawn.new([6,x], true)
+		end
+
+		@positions[0][0] = Rook.new([0,0], false)
+		@positions[0][1] = Knight.new([0,1], false)
+		@positions[0][2] = Bishop.new([0,2], false)
+		@positions[0][3] = King.new([0,3], false)
+		@positions[0][4] = Queen.new([0,4], false)
+		@positions[0][5] = Bishop.new([0,5], false)
+		@positions[0][6] = Knight.new([0,6], false)
+		@positions[0][7] = Rook.new([0,7], false)
+
+		0.upto(7) do |x|
+			@positions[1][x] = Pawn.new([1,x], false)
+		end
 	end
 
 	def play
@@ -31,14 +55,26 @@ class GameBoard
 
 	def title
 		# displays ASCII "Chess" title
+		print " .d8888b.  888                                 
+d88P  Y88b 888                                 
+888    888 888                                 
+888        88888b.   .d88b.  .d8888b  .d8888b  
+888        888 \"88b d8P  Y8b 88K      88K      
+888    888 888  888 88888888 \"Y8888b. \"Y8888b. 
+Y88b  d88P 888  888 Y8b.          X88      X88 
+ \"Y8888P\"  888  888  \"Y8888   88888P\'  88888P\' \n\n"
 	end
 
 	def display
 		rows
 		@positions.each_index do |row|
-			print "#{row}  " # need to change to 1-8 upwards
+			print "#{8 - row}  "
 			@positions[row].each_index do |column|
-				print "| #{@positions[row][column]}  " # need to update to call the object's icon. If nil, then just put a space
+				if @positions[row][column] == nil
+					print "|    "
+				else
+					print "| #{@positions[row][column].icon}  "
+				end
 			end
 			puts "|"
 			rows
@@ -54,12 +90,12 @@ class GameBoard
 
 	def x_axis
 		print "   "
-		("a".."h").each { |letter| print "  #{letter}  "} # need to change to letters
-		puts ""
+		("a".."h").each { |letter| print "  #{letter}  "}
+		puts "\n\n"
 	end
 
 	def instructions
-		# displays instructions
+		print "Instructions at https://www.chess.com/learn-how-to-play-chess\n\n"
 	end
 
 	def get_names
