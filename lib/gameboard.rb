@@ -1,30 +1,44 @@
+require_relative "knight.rb"
+require_relative "player.rb"
+require_relative "queen.rb"
+require_relative "rook.rb"
+require_relative "bishop.rb"
+require_relative "king.rb"
+require_relative "pawn.rb"
+
 class GameBoard
-	attr_accessor :pieces, :positions, :knight
+	attr_accessor :positions, :player1, :player2, :turn_counter
 
 	def initialize
-		@pieces = {
-			black_king: "♔",
-			black_queen: "♕",
-			black_rook: "♖",
-			black_bishop: "♗",
-			black_knight: "♘",
-			black_pawn: "♙",
-			white_king: "♚",
-			white_queen: "♛",
-			white_rook: "♜",
-			white_bishop: "♝",
-			white_knight: "♞",
-			white_pawn: "♟" 
-		}
 		@positions = Array.new(8) { Array.new(8, " ") }
+		@player1 = nil
+		@player2 = nil
+		@turn_counter = 1
+		place_pieces
+	end
+
+	def place_pieces
+		# creates all piece instances and places them in their default starting position
+	end
+
+	def play
+		title
+		display
+		instructions
+		get_names
+		turns
+	end
+
+	def title
+		# displays ASCII "Chess" title
 	end
 
 	def display
 		rows
 		@positions.each_index do |row|
-			print "#{row}  "
+			print "#{row}  " # need to change to 1-8 upwards
 			@positions[row].each_index do |column|
-				print "| #{@positions[row][column]}  "
+				print "| #{@positions[row][column]}  " # need to update to call the object's icon. If nil, then just put a space
 			end
 			puts "|"
 			rows
@@ -40,8 +54,66 @@ class GameBoard
 
 	def x_axis
 		print "   "
-		(0..7).each { |letter| print "  #{letter}  "}
+		("a".."h").each { |letter| print "  #{letter}  "} # need to change to letters
 		puts ""
+	end
+
+	def instructions
+		# displays instructions
+	end
+
+	def get_names
+		# sets @player1 and @player2 to Player instances
+	end
+
+	def turns
+		# turn loop
+	end
+
+	def turn
+		# prompts appropriate user for user input
+	end
+
+	def convert
+		# converts a move input to the correct @positions representation
+	end
+
+	def move
+		# moves a chess piece and updates its @possible_moves
+	end
+
+	def promote?
+		# checks if a pawn has reached the end of the board
+	end
+
+	def promote
+		# promotes a pawn to a queen/rook/knight/bishop
+	end
+
+	def check?
+		# checks if a check is in play
+	end
+
+	def check
+		# mandates that the next player moves the king
+	end
+
+	def checkmate?
+		# checks if a checkmate is in play
+	end
+
+	def win
+		# displays winning text
+	end
+
+	def lose
+		# displays losing text
+	end
+
+	def save
+	end
+
+	def load
 	end
 end
 

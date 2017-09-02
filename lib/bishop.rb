@@ -1,37 +1,18 @@
-class Knight
+class Bishop
 	attr_accessor :moveset, :x_position, :y_position, :icon, :possible_moves
 
 	def initialize(position, is_white)
 		@moveset = [
-			[-1,-2],
-			[-2,-1],
-			[-2,+1],
-			[-1,+2],
-			[+1,-2],
-			[+2,-1],
-			[+2,+1],
-			[+1,+2]
+			# pending.. is this even necessary for a queen?
 		]
 		@x_position = position[0]
 		@y_position = position[1]
 		@possible_moves = find_possible_moves
-		@icon = is_white ? "♞" : "♘"
+		@icon = is_white ? "♝" : "♗"
 	end
 
-	def find_possible_moves # need to update to take @positions as a parameter and calculate accordingly
-		possible_moves = []
-
-		@moveset.each do |move|
-			x = @x_position + move[0]
-			y = @y_position + move[1]
-
-			if (0..7).include?(x) 
-				if (0..7).include?(y) 
-					possible_moves << [x, y]
-				end
-			end
-		end
-		possible_moves
+	def find_possible_moves
+		# pending..
 	end
 end
 
