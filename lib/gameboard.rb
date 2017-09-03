@@ -5,6 +5,7 @@ require_relative "rook.rb"
 require_relative "bishop.rb"
 require_relative "king.rb"
 require_relative "pawn.rb"
+require_relative "string.rb"
 
 class GameBoard
 	attr_accessor :positions, :player1, :player2, :turn_counter
@@ -34,8 +35,8 @@ class GameBoard
 		@positions[0][0] = Rook.new([0,0], false)
 		@positions[0][1] = Knight.new([0,1], false)
 		@positions[0][2] = Bishop.new([0,2], false)
-		@positions[0][3] = King.new([0,3], false)
-		@positions[0][4] = Queen.new([0,4], false)
+		@positions[0][3] = Queen.new([0,3], false)
+		@positions[0][4] = King.new([0,4], false)
 		@positions[0][5] = Bishop.new([0,5], false)
 		@positions[0][6] = Knight.new([0,6], false)
 		@positions[0][7] = Rook.new([0,7], false)
@@ -50,11 +51,11 @@ class GameBoard
 		display
 		instructions
 		get_names
+		turn_order
 		turns
 	end
 
 	def title
-		# displays ASCII "Chess" title
 		print " .d8888b.  888                                 
 d88P  Y88b 888                                 
 888    888 888                                 
@@ -99,19 +100,44 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def get_names
-		# sets @player1 and @player2 to Player instances
+		@player1 = Player.new(1)
+		@player2 = Player.new(2)
+	end
+
+	def turn_order
+		print "#{@player1.name.bold} is #{"White".italic} and will go first!\n"
 	end
 
 	def turns
-		# turn loop
+		until checkmate?
+			turn
+			@turn_counter += 1
+			# needs #promote? and #check?
+		end
+		@turn_counter % 2 == 0 ? win(@player1) : win(@player2)
 	end
 
 	def turn
-		# prompts appropriate user for user input
+		# prompts appropriate user for user input, calls convert and move as necessary
+		player = @turn_counter % 2 == 0 ? @player2 : @player1
+		# still needs implementation
 	end
 
 	def convert
 		# converts a move input to the correct @positions representation
+	end
+
+	def update_possible_moves
+		@positions.each do |row|
+			row.each do |piece|
+				piece.find_possible_moves(@positions) if piece != nil unless piece.instance_of? King
+			end
+		end
+		@positions.each do |row|
+			row.each do |piece|
+				piece.find_possible_moves(@positions) if piece.instance_of? King
+			end
+		end
 	end
 
 	def move
@@ -136,14 +162,11 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 	def checkmate?
 		# checks if a checkmate is in play
+		false
 	end
 
-	def win
-		# displays winning text
-	end
-
-	def lose
-		# displays losing text
+	def win(player)
+		puts "Congratulations, #{player.name.bold}! You are the Champion!"
 	end
 
 	def save
@@ -152,15 +175,3 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	def load
 	end
 end
-
-=begin
-Chess Board
-0,0 0,1 0,2 0,3 0,4 0,5 0,6 0,7
-1,0 1,1 1,2 1,3 1,4 1,5 1,6 1,7
-2,0 2,1 2,2 2,3 2,4 2,5 2,6 2,7
-3,0 3,1 3,2 3,3 3,4 3,5 3,6 3,7
-4,0 4,1 4,2 4,3 4,4 4,5 4,6 4,7
-5,0 5,1 5,2 5,3 5,4 5,5 5,6 5,7
-6,0 6,1 6,2 6,3 6,4 6,5 6,6 6,7
-7,0 7,1 7,2 7,3 7,4 7,5 7,6 7,7
-=end
