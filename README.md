@@ -4,7 +4,7 @@ The goal of this project is to implement a command line [Chess](https://en.wikip
 
 This is a project from [The Odin Project](https://www.theodinproject.com/courses/ruby-programming/lessons/ruby-final-project).
 
-[Pending Project Screenshot]
+![Screenshot](screenshot.png)
 
 ## Installation
 

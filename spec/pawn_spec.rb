@@ -44,10 +44,24 @@ describe Pawn do
 			expect(white_pawn.possible_moves).to eq([])
 		end
 
-		it "should be able to diagonally capture left and right" do
+		it "white should be able to diagonally capture left and right" do
 			gameboard.positions[3][3] = Pawn.new([3,3], false)
 			white_pawn.find_possible_moves(gameboard.positions)
 			expect(white_pawn.possible_moves.sort).to eq([[3,3],[3,4]])
+		end
+
+		it "black should be able to diagonally capture left and right" do
+			gameboard.positions[4][2] = Pawn.new([4,2], false)
+			gameboard.positions[5][1] = Pawn.new([5,1], true)
+			gameboard.positions[5][3] = Pawn.new([5,3], true)
+
+			gameboard.positions[3][1] = Pawn.new([3,1], true)
+			gameboard.positions[3][3] = Pawn.new([3,3], true)
+			gameboard.display
+			black_pawn = gameboard.positions[4][2]
+			black_pawn.has_moved = true
+			black_pawn.find_possible_moves(gameboard.positions)
+			expect(black_pawn.possible_moves.sort).to eq([[5,1],[5,2],[5,3]])
 		end
 
 		it "should calculate en passant"

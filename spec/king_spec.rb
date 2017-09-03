@@ -34,6 +34,16 @@ describe King do
 			expect(king.possible_moves.sort).to eq([[3,5], [5,5]])
 		end
 
+		it "shouldn't be able to capture a piece that another piece can move onto" do
+			gameboard.positions[3][5] = Pawn.new([3,5], false) # FUCK, the pawn's possible move forward DOES NOT COUNT
+			# ALSO THE BLACK PAWN DIAGONAL CAPTURE IS BROKEN
+			#gameboard.positions[2][6] = Pawn.new([2,6], false)
+			gameboard.positions[0][5] = Rook.new([0,5], false)
+			gameboard.display
+			king.find_possible_moves(gameboard.positions)
+			expect(king.possible_moves.sort).to eq([[3,3],[3,4],[4,3],[4,5],[5,3],[5,4],[5,5]])
+		end
+
 		it "should allow castling"
 	end
 end

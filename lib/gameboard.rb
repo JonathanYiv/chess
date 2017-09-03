@@ -46,13 +46,18 @@ class GameBoard
 	end
 
 	def play
-		title
 		place_pieces
 		display
 		instructions
 		get_names
+		display
 		turn_order
 		turns
+	end
+
+	def clear
+		system "clear"
+		system "cls"
 	end
 
 	def title
@@ -67,26 +72,44 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def display
-		rows
+		clear
+		title
+		top_row
+		square = 1
 		@positions.each_index do |row|
 			print "#{8 - row}  "
 			@positions[row].each_index do |column|
 				if @positions[row][column] == nil
-					print "|    "
+					print square % 2 == 0 ? "│    " : "│#{"    ".bg_black}" 
+					square += 1
 				else
-					print "| #{@positions[row][column].icon}  "
+					print square % 2 == 0 ? "│ #{@positions[row][column].icon}  " : "│#{" #{@positions[row][column].icon}  ".bg_black}"
+					square += 1
 				end
 			end
-			puts "|"
-			rows
+			square += 1
+			puts "│"
+			row == 7 ? bottom_row : rows
 		end
 		x_axis
 	end
 
+	def top_row
+		print "   ┌────"
+		7.times.each { print "┬────" }
+		puts "┐"
+	end
+
 	def rows
-		print "   "
-		8.times.each { print "+----" }
-		puts "+"
+		print "   ├────"
+		7.times.each { print "┼────" }
+		puts "┤"
+	end
+
+	def bottom_row
+		print "   └────"
+		7.times.each { print "┴────" }
+		puts "┘"
 	end
 
 	def x_axis
@@ -105,7 +128,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def turn_order
-		print "#{@player1.name.bold} is #{"White".italic} and will go first!\n"
+		print "#{@player1.name.bold} is #{"White".italic} and will go first!\n\n"
 	end
 
 	def turns

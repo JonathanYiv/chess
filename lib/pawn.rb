@@ -20,22 +20,36 @@ class Pawn
 		x = @x_position + move
 		y = @y_position 
 
-		if valid_position?(x,y)
-			@possible_moves << [x,y] if positions[x][y] == nil
-		end
+		@possible_moves << [x,y] if positions[x][y] == nil && valid_position?(x,y)
 
 		if @has_moved == false
-			if positions[@x_position + move][@y_position] == nil && positions[@x_position + 2 * move][@y_position] == nil
-				@possible_moves << [@x_position + 2 * move, @y_position]
+			if positions[x][y] == nil && positions[x + move][y] == nil
+				@possible_moves << [x + move, y]
 			end
 		end
 
-		if positions[@x_position - move][@y_position + move] != nil && positions[@x_position - move][@y_position + move].color != @color
-			@possible_moves << [@x_position - move, @y_position + move]
+		x = @x_position
+
+		if positions[x - move][y + move] != nil && positions[x - move][y + move].color != @color
+			@possible_moves << [x - move, y + move]
 		end
 
-		if positions[@x_position + move][@y_position + move] != nil && positions[@x_position + move][@y_position + move].color != @color
-			@possible_moves << [@x_position + move, @y_position + move]
+		if positions[x + move][y + move] != nil && positions[x + move][y + move].color != @color
+			@possible_moves << [x + move, y + move]
 		end
 	end
 end
+
+=begin
+WHITE
+[1,0]
+[2,0] if it hasn't moved yet and both [1,0] and [2,0] are empty
+[1,1]
+[1,-1]
+
+BLACK
+[-1,0]
+[-2,0] if it hasn't moved yet and both [-1,0] and [-2,0] are empty
+[-1,1]
+[-1,-1]
+=end
