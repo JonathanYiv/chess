@@ -5,7 +5,6 @@ class Pawn
 
 	def initialize(position, is_white)
 		@moveset = [
-			[0,1]
 		]
 		@x_position = position[0]
 		@y_position = position[1]
@@ -17,25 +16,26 @@ class Pawn
 	end
 
 	def find_possible_moves(positions) 
-		x = @x_position + move[0]
-		y = @y_position + move[1]
+		move = color == "white" ? -1 : +1
+		x = @x_position + move
+		y = @y_position 
 
-		if valid_position?(x,y) # one space forward
+		if valid_position?(x,y)
 			@possible_moves << [x,y] if positions[x][y] == nil
 		end
 
-		if @has_moved == false # two spaces forward
-			if positions[@x_position][@y_position + 1] == nil && positions[@x_position][@y_position + 2] == nil
-				@possible_moves << [@x_position, @y_position + 2]
+		if @has_moved == false
+			if positions[@x_position + move][@y_position] == nil && positions[@x_position + 2 * move][@y_position] == nil
+				@possible_moves << [@x_position + 2 * move, @y_position]
 			end
 		end
 
-		if positions[@x_position - 1][@y_position + 1] != nil && positions[@x_position - 1][@y_position + 1].color != @color # left diagonal capture
-			@possible_moves << [@x_position - 1, @y_position + 1]
+		if positions[@x_position - move][@y_position + move] != nil && positions[@x_position - move][@y_position + move].color != @color
+			@possible_moves << [@x_position - move, @y_position + move]
 		end
 
-		if positions[@x_position + 1][@y_position + 1] != nil && positions[@x_position + 1][@y_position + 1].color != @color # right diagonal capture
-			@possible_moves << [@x_position + 1, @y_position + 1]
+		if positions[@x_position + move][@y_position + move] != nil && positions[@x_position + move][@y_position + move].color != @color
+			@possible_moves << [@x_position + move, @y_position + move]
 		end
 	end
 end
