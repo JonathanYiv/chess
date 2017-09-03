@@ -1,12 +1,15 @@
 class Player
 	attr_accessor :name
 
-	def initialize
-		@name = get_name
+	def initialize(number)
+		@name = get_name(number)
 	end
 
-	def get_name
-		# gets user input for name
+	def get_name(number)
+		print "Hello Player #{number}! What is your name?\n> "
+		@name = gets.chomp
+		puts ""
+		@name
 	end
 
 	def take_turn
