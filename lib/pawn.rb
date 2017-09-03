@@ -1,11 +1,11 @@
+require_relative "helper.rb"
+
 class Pawn
 	attr_accessor :moveset, :x_position, :y_position, :possible_moves, :icon, :has_moved, :double_stepped, :color
 
 	def initialize(position, is_white)
 		@moveset = [
-			[0,1],
-			[0,2]
-			 # still need to include [0,2] if @has_moved is false
+			[0,1]
 		]
 		@x_position = position[0]
 		@y_position = position[1]
@@ -16,22 +16,26 @@ class Pawn
 		@color =  is_white ? "white" : "black"
 	end
 
-	def find_possible_moves(positions)
-		@moveset.each do |move|
-			x = @x_position + move[0]
-			y = @y_position + move[1]
+	def find_possible_moves(positions) 
+		x = @x_position + move[0]
+		y = @y_position + move[1]
 
-			if (0..7).include?(x) 
-				if (0..7).include?(y) 
-					if positions[x][y] == nil
-						@possible_moves << [x, y] # need to be able to move diagonally to capture, and also en passant
-					end
-					# if the move is one forward, and the space is empty, it can happen
-					# if the move is two forward, both the space and the space before it must be empty and the pawn must not have moved before
-					# if the move is diagonal, there must be an enemy piece on the diagonal space
+		if valid_position?(x,y) # one space forward
+			@possible_moves << [x,y] if positions[x][y] == nil
+		end
 
-				end
+		if @has_moved == false # two spaces forward
+			if positions[@x_position][@y_position + 1] == nil && positions[@x_position][@y_position + 2] == nil
+				@possible_moves << [@x_position, @y_position + 2]
 			end
+		end
+
+		if positions[@x_position - 1][@y_position + 1] != nil && positions[@x_position - 1][@y_position + 1].color != @color # left diagonal capture
+			@possible_moves << [@x_position - 1, @y_position + 1]
+		end
+
+		if positions[@x_position + 1][@y_position + 1] != nil && positions[@x_position + 1][@y_position + 1].color != @color # right diagonal capture
+			@possible_moves << [@x_position + 1, @y_position + 1]
 		end
 	end
 end

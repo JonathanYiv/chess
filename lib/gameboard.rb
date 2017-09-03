@@ -15,7 +15,6 @@ class GameBoard
 		@player1 = nil
 		@player2 = nil
 		@turn_counter = 1
-		place_pieces
 	end
 
 	def place_pieces
@@ -48,6 +47,7 @@ class GameBoard
 
 	def play
 		title
+		place_pieces
 		display
 		instructions
 		get_names
@@ -128,15 +128,11 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def update_possible_moves
-		@positions.each do |row|
-			row.each do |piece|
-				piece.find_possible_moves(@positions) if piece != nil unless piece.instance_of? King
-			end
+		@positions.flatten.each do |piece|
+			piece.find_possible_moves(@positions) if piece != nil unless piece.instance_of? King
 		end
-		@positions.each do |row|
-			row.each do |piece|
-				piece.find_possible_moves(@positions) if piece.instance_of? King
-			end
+		@positions.flatten.each do |piece|
+			piece.find_possible_moves(@positions) if piece.instance_of? King
 		end
 	end
 

@@ -1,3 +1,5 @@
+require_relative "helper.rb"
+
 class Bishop
 	attr_accessor :moveset, :x_position, :y_position, :icon, :possible_moves, :color
 
@@ -22,18 +24,12 @@ class Bishop
 			max_found = false
 
 			until max_found == true
-				if (0..7).include?(x)
-					if (0..7).include?(y)
-						if positions[x][y] != nil
-							if positions[x][y].color != @color
-								@possible_moves << [x,y]
-							end
-							max_found = true
-						else
-							@possible_moves << [x,y]
-						end
-					else
+				if valid_position?(x,y)
+					if positions[x][y] != nil
+						@possible_moves << [x,y] if positions[x][y].color != @color
 						max_found = true
+					else
+						@possible_moves << [x,y]
 					end
 				else
 					max_found = true

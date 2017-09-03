@@ -1,3 +1,5 @@
+require_relative "helper.rb"
+
 class Knight
 	attr_accessor :moveset, :x_position, :y_position, :icon, :possible_moves, :color
 
@@ -24,12 +26,8 @@ class Knight
 			x = @x_position + move[0]
 			y = @y_position + move[1]
 
-			if (0..7).include?(x) 
-				if (0..7).include?(y) 
-					if positions[x][y] == nil || positions[x][y].color != @color
-						@possible_moves << [x, y]
-					end
-				end
+			if valid_position?(x,y)
+				@possible_moves << [x, y] if positions[x][y] == nil || positions[x][y].color != @color
 			end
 		end
 	end
