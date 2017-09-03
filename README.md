@@ -20,7 +20,7 @@ $ ruby lib/game.rb
 
 1. I reflected on how to represent the chess pieces. They will have multiple values: their x-position, y-position, moveset, and icon. I could do a several layers deep mixture of hash/array, but accessing the necessary data would be ugly. Therefore, I will use classes.
 
-2. Had a discussion with my @benjaminapetersen about Composition vs Inheritance. Read about 'has-a' vs 'is-a' relationships. Realized that for the scope of this project, chess pieces don't need to inherit anything nor would their small pieces of functionality need to be extracted into something like a module.
+2. Had a discussion with @benjaminapetersen about Composition vs Inheritance. Read about 'has-a' vs 'is-a' relationships. Realized that for the scope of this project, chess pieces don't need to inherit anything nor would their small pieces of functionality need to be extracted into something like a module.
 
 3. I have been looking forward to this project for a very long time. I heard talk of it in the chat, then peeked forward at it earlier, and was excited to tackle this. It will definitely be a notch in my belt.
 
