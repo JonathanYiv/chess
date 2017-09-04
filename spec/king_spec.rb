@@ -4,7 +4,9 @@ require "gameboard"
 describe King do
 	let(:gameboard) { GameBoard.new }
 	let(:king) { King.new([4,4], true) }
+	let(:enemy_king) { King.new([0,0], false) }
 	before do
+		gameboard.positions[0][0] = enemy_king
 		gameboard.positions[4][4] = king
 	end
 
@@ -47,6 +49,28 @@ describe King do
 			expect( king.possible_moves.sort ).to include([3,4])
 		end
 
+		it "can not move off the board" do
+			edge_king = King.new([0,7], true)
+			gameboard.positions[0][7] = edge_king
+			edge_king.find_possible_moves(gameboard.positions)
+			expect( edge_king.possible_moves.sort ).to eq([[0,6], [1,6], [1,7]])
+		end
+
+		it "can not move towards an enemy king" do
+			enemy_king = King.new([2,4], false)
+			gameboard.positions[2][4] = enemy_king
+			gameboard.update_possible_moves
+			expect( king.possible_moves ).not_to include([3,3], [3,4], [3,5])
+		end
+
+		it "can not capture a piece towards an enemy king" do
+			enemy_king = King.new([2,4], false)
+			gameboard.positions[2][4] = enemy_king
+			gameboard.positions[3][4] = Pawn.new([3,4], false)
+			gameboard.update_possible_moves
+			expect( king.possible_moves ).not_to include([3,3], [3,4], [3,5])
+		end
+
 		it "should allow castling"
 	end
 
@@ -58,7 +82,7 @@ describe King do
 		end 
 
 		it "shows in check when a bishop is threatening" do
-			gameboard.positions[0][0] = Bishop.new([0,0], false)
+			gameboard.positions[1][1] = Bishop.new([1,1], false)
 			gameboard.update_possible_moves
 			expect( king.in_check?(gameboard.positions) ).to be true
 		end

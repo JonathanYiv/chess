@@ -21,17 +21,21 @@ class Pawn
 	end
 
 	def find_possible_moves(positions) 
+		@possible_moves = []
+		
 		@moveset.keys.each do |move_type|
 			x = @x_position + @moveset[move_type][0]
 			y = @y_position + @moveset[move_type][1]
 
-			case move_type
-			when :one_step
-				@possible_moves << [x, y] if positions[x][y].nil?
-			when :double_step
-				@possible_moves << [x, y] if positions[x][y].nil? && positions[(x + @x_position) / 2][y].nil? && @has_moved == false
-			when :right_diagonal, :left_diagonal
-				@possible_moves << [x, y] if !positions[x][y].nil? && positions[x][y].color != @color
+			if valid_position?(x, y)
+				case move_type
+				when :one_step
+					@possible_moves << [x, y] if positions[x][y].nil?
+				when :double_step
+					@possible_moves << [x, y] if positions[x][y].nil? && positions[(x + @x_position) / 2][y].nil? && @has_moved == false
+				when :right_diagonal, :left_diagonal
+					@possible_moves << [x, y] if !positions[x][y].nil? && positions[x][y].color != @color
+				end
 			end
 
 		end

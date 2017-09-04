@@ -19,6 +19,8 @@ class Rook
 	end
 
 	def find_possible_moves(positions) 
+		@possible_moves = []
+		
 		@moveset.each do |move|
 			x = @x_position + move[0]
 			y = @y_position + move[1]

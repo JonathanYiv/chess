@@ -46,6 +46,13 @@ describe Pawn do
 				expect(white_pawn.possible_moves).to include([5,5])
 			end
 
+			it "can not move off the board" do
+				edge_pawn = Pawn.new([0,7], true)
+				gameboard.positions[0][7] = edge_pawn
+				edge_pawn.find_possible_moves(gameboard.positions)
+				expect(edge_pawn.possible_moves).to eq([])
+			end
+
 			it "can perform en passant"
 		end
 
@@ -82,6 +89,13 @@ describe Pawn do
 				gameboard.positions[2][2] = Pawn.new([2,2], true)
 				black_pawn.find_possible_moves(gameboard.positions)
 				expect(black_pawn.possible_moves).to include([2,2])
+			end
+
+			it "can not move off the board" do
+				edge_pawn = Pawn.new([7,0], false)
+				gameboard.positions[7][0] = edge_pawn
+				edge_pawn.find_possible_moves(gameboard.positions)
+				expect(edge_pawn.possible_moves).to eq([])
 			end
 
 			it "can perform en passant"

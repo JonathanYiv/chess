@@ -146,18 +146,27 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		player = @turn_counter % 2 == 0 ? @player2 : @player1
 		print "It's your turn, #{player.name.bold}! What are you going to do?\n\n"
 		print "Notate your move in the form of: 'B1 to C3'\n> "
-		move = player.get_move
-		piece_position = [move[1], move[2]]
-		piece_move_position = [move[3], move[4]]
 
-		puts piece_position.inspect
-		puts piece_move_position.inspect
+		update_possible_moves
+
+
+		move = player.get_move
+		piece_position = convert([move[2], move[1]])
+		piece_move_position = convert([move[4], move[3]])
+
+		piece = @positions[piece_position[0]][piece_position[1]]
+		puts piece.possible_moves.include?(piece_move_position)
+
+
+
 
 		# still implementing
 	end
 
-	def convert
-		# converts a move input to the correct @positions representation
+	def convert(array)
+		array[0] = 7 - (array[0].to_i - 1)
+		array[1] = array[1].ord - 97
+		array
 	end
 
 	def update_possible_moves
