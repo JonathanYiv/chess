@@ -24,4 +24,12 @@ class King
 
 	def find_possible_moves(positions)
 	end
+
+	def in_check?(positions)
+		in_check = false
+		positions.flatten.each do |piece|
+			in_check = true if !piece.nil? && piece.possible_moves.include?([@x_position, @y_position]) 
+		end
+		in_check
+	end
 end
