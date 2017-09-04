@@ -66,13 +66,13 @@ class King
 
 	def in_check?(positions)
 		in_check = false
-		positions.flatten.each do |piece|
+		positions.flatten.select { |piece| !piece.nil? && piece.color != @color }.each do |piece| #each do |piece|
 			if piece.instance_of? Pawn
 				piece.possible_moves.each do |move|
 					in_check = true if move[1] != piece.y_position && move == [@x_position, @y_position]
 				end
 			else
-				in_check = true if !piece.nil? && piece.possible_moves.include?([@x_position, @y_position]) 
+				in_check = true if piece.possible_moves.include?([@x_position, @y_position]) 
 			end
 		end
 
