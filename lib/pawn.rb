@@ -4,8 +4,12 @@ class Pawn
 	attr_accessor :moveset, :x_position, :y_position, :possible_moves, :icon, :has_moved, :double_stepped, :color
 
 	def initialize(position, is_white)
-		@moveset = [
-		]
+		@moveset = {
+			one_step: [1, 0],
+			double_step: [2, 0],
+			right_diagonal: [1, 1],
+			left_diagonal: [1, -1],
+		}
 		@x_position = position[0]
 		@y_position = position[1]
 		@possible_moves = []
@@ -13,29 +17,25 @@ class Pawn
 		@has_moved = false
 		@double_stepped = false
 		@color =  is_white ? "white" : "black"
+		@moveset.keys.each { |move_type| @moveset[move_type][0] *= -1} if @color == "white"
 	end
 
 	def find_possible_moves(positions) 
-		move = color == "white" ? -1 : +1
-		x = @x_position + move
-		y = @y_position 
+		@moveset.keys.each do |move_type|
+			x = @x_position + @moveset[move_type][0]
+			y = @y_position + @moveset[move_type][1]
 
-		@possible_moves << [x,y] if positions[x][y] == nil && valid_position?(x,y)
-
-		if @has_moved == false
-			if positions[x][y] == nil && positions[x + move][y] == nil
-				@possible_moves << [x + move, y]
+			case move_type
+			when :one_step
+				@possible_moves << [x, y] if positions[x][y].nil?
+			when :double_step
+				@possible_moves << [x, y] if positions[x][y].nil? && positions[(x + @x_position) / 2][y].nil? && @has_moved == false
+			when :right_diagonal
+				@possible_moves << [x, y] if !positions[x][y].nil? && positions[x][y].color != @color
+			when :left_diagonal
+				@possible_moves << [x, y] if !positions[x][y].nil? && positions[x][y].color != @color
 			end
-		end
 
-		x = @x_position
-
-		if positions[x - move][y + move] != nil && positions[x - move][y + move].color != @color
-			@possible_moves << [x - move, y + move]
-		end
-
-		if positions[x + move][y + move] != nil && positions[x + move][y + move].color != @color
-			@possible_moves << [x + move, y + move]
 		end
 	end
 end
@@ -43,13 +43,16 @@ end
 =begin
 WHITE
 [1,0]
-[2,0] if it hasn't moved yet and both [1,0] and [2,0] are empty
+[2,0]
+
 [1,1]
 [1,-1]
 
 BLACK
 [-1,0]
-[-2,0] if it hasn't moved yet and both [-1,0] and [-2,0] are empty
+[-2,0]
+
 [-1,1]
 [-1,-1]
+
 =end
