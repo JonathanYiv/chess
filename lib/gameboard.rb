@@ -129,7 +129,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 	def turn_order
 		print "#{@player1.name.bold}'s soldiers are on the #{"light".italic} side and will go first!\n\n"
-		print "#{@player2.name.bold}'s soldiers are on the #{"dark".italic} side and will go second!\n\n"
+		print "#{@player2.name.bold}'s soldiers are on the #{"dark".italic} side and will go second!\n\n\n"
 	end
 
 	def turns
@@ -144,19 +144,25 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	def turn
 		# prompts appropriate user for user input, calls convert and move as necessary
 		player = @turn_counter % 2 == 0 ? @player2 : @player1
-		# still needs implementation
+		print "It's your turn, #{player.name.bold}! What are you going to do?\n\n"
+		print "Notate your move in the form of: 'B1 to C3'\n> "
+		move = player.get_move
+		piece_position = [move[1], move[2]]
+		piece_move_position = [move[3], move[4]]
+
+		puts piece_position.inspect
+		puts piece_move_position.inspect
+
+		# still implementing
 	end
 
 	def convert
 		# converts a move input to the correct @positions representation
 	end
 
-	def update_possible_moves # probably need to redo this
+	def update_possible_moves
 		@positions.flatten.each do |piece|
-			piece.find_possible_moves(@positions) if piece != nil unless piece.instance_of? King
-		end
-		@positions.flatten.each do |piece|
-			piece.find_possible_moves(@positions) if piece.instance_of? King
+			piece.find_possible_moves(@positions) if piece != nil
 		end
 	end
 
