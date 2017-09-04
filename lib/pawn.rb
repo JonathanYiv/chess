@@ -30,9 +30,7 @@ class Pawn
 				@possible_moves << [x, y] if positions[x][y].nil?
 			when :double_step
 				@possible_moves << [x, y] if positions[x][y].nil? && positions[(x + @x_position) / 2][y].nil? && @has_moved == false
-			when :right_diagonal
-				@possible_moves << [x, y] if !positions[x][y].nil? && positions[x][y].color != @color
-			when :left_diagonal
+			when :right_diagonal, :left_diagonal
 				@possible_moves << [x, y] if !positions[x][y].nil? && positions[x][y].color != @color
 			end
 

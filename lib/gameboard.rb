@@ -128,7 +128,8 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def turn_order
-		print "#{@player1.name.bold} is #{"White".italic} and will go first!\n\n"
+		print "#{@player1.name.bold}'s soldiers are on the #{"light".italic} side and will go first!\n\n"
+		print "#{@player2.name.bold}'s soldiers are on the #{"dark".italic} side and will go second!\n\n"
 	end
 
 	def turns
@@ -150,7 +151,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		# converts a move input to the correct @positions representation
 	end
 
-	def update_possible_moves
+	def update_possible_moves # probably need to redo this
 		@positions.flatten.each do |piece|
 			piece.find_possible_moves(@positions) if piece != nil unless piece.instance_of? King
 		end
