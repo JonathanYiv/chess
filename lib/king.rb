@@ -50,37 +50,15 @@ class King
 	def in_check?(positions)
 		in_check = false
 		positions.flatten.each do |piece|
-			in_check = true if !piece.nil? && piece.possible_moves.include?([@x_position, @y_position]) 
+			if piece.instance_of? Pawn
+				piece.possible_moves.each do |move|
+					in_check = true if move[1] != piece.y_position && move == [@x_position, @y_position]
+				end
+			else
+				in_check = true if !piece.nil? && piece.possible_moves.include?([@x_position, @y_position]) 
+			end
 		end
+
 		in_check
 	end
 end
-
-
-
-
-=begin
-
-piece_placeholder = positions[x][y]
-			positions[@x_position][@y_position] = nil
-			positions[x][y] = self
-
-			positions.flatten.each do |piece|
-				piece.find_possible_moves(positions) if piece != nil unless piece.instance_of? King
-			end
-
-			@possible_moves << [x, y] if !self.in_check?(positions) unless (!piece_placeholder.nil? && piece_placeholder.color == @color) 
-
-			positions[x][y] = piece_placeholder
-			positions[@x_position][@y_position] = self
-
-
-
-test_positions = Array.new(8) { Array.new(8, nil) }
-positions.each_index do |row|
-	row.each_index do |column|
-		test_positions[row][column] = positions[row][column].clone
-	end
-end
-
-=end

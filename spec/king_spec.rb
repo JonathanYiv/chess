@@ -21,6 +21,12 @@ describe King do
 		end
 
 		it "can't move onto a space which would put it into check" do
+			gameboard.positions[3][3] = Queen.new([3,3], false)
+			gameboard.update_possible_moves
+			expect( king.possible_moves.sort ).to eq([[3,3], [4,5], [5,4]])
+		end
+
+		it "can't capture a piece that would put it into check" do
 			gameboard.positions[3][5] = Pawn.new([3,5], false)
 			gameboard.positions[2][6] = Pawn.new([2,6], false)
 			gameboard.positions[3][5].find_possible_moves(gameboard.positions)
@@ -29,9 +35,18 @@ describe King do
 			expect( king.possible_moves.sort ).to eq([[3, 3], [3, 4], [4, 3], [4, 5], [5, 3], [5, 4], [5, 5]])
 		end
 
-		it "can't capture a piece that would put it into check"
-		it "can move onto a space directly in front of a pawn"
-		it "can move onto a space two in front of a pawn"
+		it "can move onto a space directly in front of a pawn" do
+			gameboard.positions[2][5] = Pawn.new([2,5], false)
+			king.find_possible_moves(gameboard.positions)
+			expect( king.possible_moves.sort ).to include([3,5])
+		end
+
+		it "can move onto a space two in front of a pawn" do
+			gameboard.positions[1][4] = Pawn.new([1,4], false)
+			king.find_possible_moves(gameboard.positions)
+			expect( king.possible_moves.sort ).to include([3,4])
+		end
+
 		it "should allow castling"
 	end
 
