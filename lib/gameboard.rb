@@ -135,16 +135,18 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	def turns
 		update_possible_moves
 		until checkmate?
-			turn
+			if check?
+				check_turn
+			else
+				turn
+			end
 			@turn_counter += 1
-			check? # testing line
-			# needs #promote? and #check?
+			# needs #promote?
 		end
 		@turn_counter % 2 == 0 ? win(@player1) : win(@player2)
 	end
 
 	def turn
-		# prompts appropriate user for user input, calls convert and move as necessary
 		player = @turn_counter % 2 == 0 ? @player2 : @player1
 		color = @turn_counter % 2 == 0 ? "black" : "white"
 		print "It's your turn, #{player.name.bold}! What are you going to do?\n\n"
@@ -165,7 +167,30 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 		move(piece_position, piece_move_position)
 		update_possible_moves
-		puts piece.possible_moves.inspect
+		puts piece.possible_moves.inspect # this is a testing line
+	end
+
+	def check_turn
+		player = @turn_counter % 2 == 0 ? @player2 : @player1
+		color = @turn_counter % 2 == 0 ? "black" : "white"
+
+		print "Your King is in check, #{player.name.bold}! You better get out of the way!\n> "
+
+		move = player.get_move
+		piece_position = convert([move[2], move[1]])
+		piece_move_position = convert([move[4], move[3]])
+		piece = @positions[piece_position[0]][piece_position[1]]
+		
+		until piece.possible_moves.include?(piece_move_position) && piece.color == color && piece.instance_of?(King)
+			print "\nKeep in mind you have to move your King. Try again:\n> "
+			move = player.get_move
+			piece_position = convert([move[2], move[1]])
+			piece_move_position = convert([move[4], move[3]])
+			piece = @positions[piece_position[0]][piece_position[1]]
+		end
+
+		move(piece_position, piece_move_position)
+		update_possible_moves
 	end
 
 	def convert(array)
@@ -181,7 +206,6 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def move(current, new)
-		# moves a chess piece and updates its @possible_moves
 		temp = @positions[current[0]][current[1]]
 		temp.x_position = new[0]
 		temp.y_position = new[1]
@@ -199,20 +223,16 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def check?
-		# checks if a check is in play
-		@positions.flatten.select { |square| square.instance_of?(King) }.each do |king|
-			puts "checking.."
+		color = @turn_counter % 2 == 0 ? "black" : "white"
+		@positions.flatten.select { |square| square.instance_of?(King) && square.color == color }.each do |king|
 			if king.in_check?(@positions)
-				puts "Check found!"
+				return true
 			end
 		end
+		false
 	end
 
-	def check
-		# mandates that the next player moves the king
-	end
-
-	def checkmate? 
+	def checkmate? # not implemented
 		false
 	end
 
