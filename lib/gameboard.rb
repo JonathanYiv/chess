@@ -6,6 +6,7 @@ require_relative "bishop.rb"
 require_relative "king.rb"
 require_relative "pawn.rb"
 require_relative "string.rb"
+require "pry"
 
 class GameBoard
 	attr_accessor :positions, :player1, :player2, :turn_counter
@@ -193,7 +194,6 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 
 		move(piece_position, piece_move_position)
-		puts piece.possible_moves.inspect # test line
 		update_possible_moves
 	end
 
@@ -205,10 +205,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 	def update_possible_moves
 		@positions.flatten.each do |piece|
-			piece.find_possible_moves(@positions) if piece != nil && !piece.instance_of?(King)
-		end
-		@positions.flatten.each do |piece|
-			piece.find_possible_moves(@positions) if piece != nil && piece.instance_of?(King)
+			piece.find_possible_moves(@positions) if piece != nil
 		end
 	end
 

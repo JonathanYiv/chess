@@ -19,7 +19,7 @@ class Bishop
 
 	def find_possible_moves(positions)
 		@possible_moves = []
-		
+
 		@moveset.each do |move|
 			x = @x_position + move[0]
 			y = @y_position + move[1]
@@ -27,7 +27,7 @@ class Bishop
 
 			until max_found == true
 				if valid_position?(x,y)
-					if positions[x][y] != nil
+					if !positions[x][y].nil?
 						@possible_moves << [x,y] if positions[x][y].color != @color
 						max_found = true
 					else
@@ -36,9 +36,34 @@ class Bishop
 				else
 					max_found = true
 				end
-				x = x + move[0]
-				y = y + move[1]
+				x += move[0]
+				y += move[1]
 			end
 		end
 	end
 end
+
+
+
+
+=begin
+
+
+
+
+
+@moveset.each do |move|
+			x, y = @x_position + move[0], @y_position + move[1]
+
+
+			if valid_position?(x, y)
+				loop do
+					@possible_moves << [x, y] if positions[x][y].nil?
+					@possible_moves << [x, y] if positions[x][y]&.color != @color
+					exit if !positions[x][y].nil?
+					x += move[0]
+					y += move[1]
+				end
+			end
+		end
+=end
