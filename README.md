@@ -153,3 +153,22 @@ Additionally:
 ## Post-Project Thoughts
 
 This project is currently incomplete.
+
+1. Cloning: Behold, my greatest failure as of yet. This was the longest I have ever taken to solve a bug. So here's the story...
+
+	1. First Iteration: In order for me to calculate the King's possible moves, I needed to evaluate the possible moves of all other pieces to make sure the King didn't move into check. So I iterated through every existing piece and compared them to the King's possible moves to determine which were valid.
+
+	2. Second Iteration: Then, I realized that a given piece's possible moveset would not include a friendly piece adjacent to the King, because it can't capture friendly pieces. However, the King could capture that piece and put itself into check via the given piece's moveset. So I created a 'deep clone' of the board. I iterated through every position on the board and cloned the object into the clone board. I moved the King to the potential move-spot and then calculated the new possible movesets accordingly. This didn't work, because it would calculate the possible moveset of the enemy King, which would create another clone board, which would calculate the moveset of the enemy King... stack overflow.
+
+	3. Third Iteration: When iterating through the pieces on the clone board, I created an if/else to isolate the King, and simply added all adjacent squares into that King's possible movesets. That seemed to work until I found out that the Black King somehow could capture his friendly adjacent pieces.
+
+	4. Fourth Iteration: This took me two days to realize, but the 'deep clone' I had created earlier still wasn't deep enough! The objects that were cloned still had instance variables, and in the case of the instance variable @possible_moves, it wasn't creating a copy, it was simply pointing to the same object! I made the clone deeper and that fixed the problem.
+
+2. Pry: @105ron linked me to pry when I sought help for the above problem. I learnt some of the basics including 'binding.pry' and, although it didn't help me debug the cloning problem, I can see it is very useful and will add it to my debugging toolbelt.
+
+3. Safe Navigation Operator: I learned about the "&" operator. It checks for nil before calling a method. 
+
+	1. Example: variable&.method
+
+	If variable is nil, it will return nil.
+	If variable is not nil, it will call the method.
