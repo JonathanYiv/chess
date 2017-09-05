@@ -22,6 +22,14 @@ describe King do
 			expect( king.possible_moves.sort ).to eq([[3, 4], [3, 5], [4, 3], [4, 5], [5, 3], [5, 4], [5, 5]])
 		end
 
+		it "can't capture a friendly queen" do
+			gameboard.positions[0][0] = nil
+			gameboard.positions[0][4] = enemy_king
+			gameboard.positions[0][3] = Queen.new([0,3], false)
+			gameboard.update_possible_moves
+			expect( enemy_king.possible_moves ).not_to include([0,3])
+		end
+
 		it "can't move onto a space which would put it into check" do
 			gameboard.positions[3][3] = Queen.new([3,3], false)
 			gameboard.update_possible_moves
@@ -103,6 +111,16 @@ describe King do
 			gameboard.positions[5][2] = Knight.new([5,2], false)
 			gameboard.update_possible_moves
 			expect( king.in_check?(gameboard.positions) ).to be true
+		end
+	end
+
+	context "black king inappropriate movement bug" do
+		it "should not be able to capture adjacent same-colored pieces" do
+			game = GameBoard.new
+			game.place_pieces
+			game.update_possible_moves
+			#game.positions[0][4].find_possible_moves(game.positions)
+			expect( game.positions[0][4].possible_moves ).not_to include([1,4])
 		end
 	end
 end

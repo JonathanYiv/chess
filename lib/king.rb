@@ -42,14 +42,16 @@ class King
 				test_knight = King.new([x, y], @color == "white")
 				test_positions[x][y] = test_knight
 
-				test_positions.flatten.select { |square| square !=  nil && square.color != color }.each do |piece|
+				
+
+				test_positions.flatten.select { |square| square !=  nil && square.color != color }.each do |piece| 
 					if piece.instance_of?(King)
-						piece.moveset.each do |move|
-							a = piece.x_position + move[0]
-							b = piece.y_position + move[1]
+						piece.moveset.each do |test_move|
+							a = piece.x_position + test_move[0]
+							b = piece.y_position + test_move[1]
 
 							if valid_position?(a, b)
-								piece.possible_moves << [a, b]
+								piece.possible_moves << [a, b] # this right here is causing the issue
 							end
 						end
 					else
@@ -57,8 +59,7 @@ class King
 					end
 				end
 
-
-
+				# king was somehow able to eat the queen of same color
 				@possible_moves << [x, y] if !test_knight.in_check?(test_positions) && (positions[x][y].nil? || positions[x][y].color != @color)
 			end
 		end

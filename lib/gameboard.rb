@@ -72,7 +72,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def display
-		clear
+		#clear
 		title
 		top_row
 		square = 1
@@ -167,7 +167,6 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 		move(piece_position, piece_move_position)
 		update_possible_moves
-		puts piece.possible_moves.inspect # this is a testing line
 	end
 
 	def check_turn
@@ -180,6 +179,8 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		piece_position = convert([move[2], move[1]])
 		piece_move_position = convert([move[4], move[3]])
 		piece = @positions[piece_position[0]][piece_position[1]]
+
+
 		
 		until piece.possible_moves.include?(piece_move_position) && piece.color == color && piece.instance_of?(King)
 			print "\nKeep in mind you have to move your King. Try again:\n> "
@@ -189,7 +190,10 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 			piece = @positions[piece_position[0]][piece_position[1]]
 		end
 
+
+
 		move(piece_position, piece_move_position)
+		puts piece.possible_moves.inspect # test line
 		update_possible_moves
 	end
 
@@ -201,7 +205,10 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 	def update_possible_moves
 		@positions.flatten.each do |piece|
-			piece.find_possible_moves(@positions) if piece != nil
+			piece.find_possible_moves(@positions) if piece != nil && !piece.instance_of?(King)
+		end
+		@positions.flatten.each do |piece|
+			piece.find_possible_moves(@positions) if piece != nil && piece.instance_of?(King)
 		end
 	end
 
@@ -233,6 +240,12 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def checkmate? # not implemented
+		color = @turn_counter % 2 == 0 ? "black" : "white"
+		@positions.flatten.select {|square| square.instance_of?(King) && square.color == color }.each do |king|
+			if king.in_check?(@positions) && king.possible_moves.empty?
+				return true
+			end
+		end
 		false
 	end
 
