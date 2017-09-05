@@ -205,7 +205,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 	def update_possible_moves
 		@positions.flatten.each do |piece|
-			piece.find_possible_moves(@positions) if piece != nil
+			piece&.find_possible_moves(@positions)
 		end
 	end
 

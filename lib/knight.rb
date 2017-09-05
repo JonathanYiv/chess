@@ -29,7 +29,7 @@ class Knight
 			y = @y_position + move[1]
 
 			if valid_position?(x,y)
-				@possible_moves << [x, y] if positions[x][y] == nil || positions[x][y].color != @color
+				@possible_moves << [x, y] if positions[x][y].nil? || positions[x][y].color != @color
 			end
 		end
 	end

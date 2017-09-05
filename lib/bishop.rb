@@ -21,8 +21,7 @@ class Bishop
 		@possible_moves = []
 
 		@moveset.each do |move|
-			x = @x_position + move[0]
-			y = @y_position + move[1]
+			x, y = @x_position + move[0], @y_position + move[1]
 			max_found = false
 
 			until max_found == true
@@ -51,13 +50,13 @@ end
 
 
 
-
 @moveset.each do |move|
 			x, y = @x_position + move[0], @y_position + move[1]
 
 
 			if valid_position?(x, y)
 				loop do
+					binding.pry
 					@possible_moves << [x, y] if positions[x][y].nil?
 					@possible_moves << [x, y] if positions[x][y]&.color != @color
 					exit if !positions[x][y].nil?
@@ -66,4 +65,5 @@ end
 				end
 			end
 		end
+
 =end
