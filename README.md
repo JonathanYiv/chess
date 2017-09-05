@@ -170,5 +170,8 @@ This project is currently incomplete.
 
 	1. Example: variable&.method
 
-	If variable is nil, it will return nil.
-	If variable is not nil, it will call the method.
+		2. If variable is nil, it will return nil.
+	
+		3. If variable is not nil, it will call the method.
+
+4. I have tried changing GitHub's tab size to 2, even modifying the file itself by ending a comment or something, but it always reverts to a displayed tab size of 8. Does anyone know how to fix this?
