@@ -35,9 +35,28 @@ class Pawn
 					@possible_moves << [x, y] if positions[x][y].nil? && positions[(x + @x_position) / 2][y].nil? && @has_moved == false # still need to implement @has_moved
 				when :right_diagonal, :left_diagonal
 					@possible_moves << [x, y] if !positions[x][y].nil? && positions[x][y].color != @color
+					add_en_passant(positions, x, y)
+				end
+			end
+		end
+	end
+
+	def add_en_passant(positions, x, y)
+		# if position is nil
+		# if a pawn is directly above (black)/below (white) the position
+		# if the pawn just made a double step
+		if positions[x][y].nil?
+			if @color == "white"
+				if positions[x + 1][y].instance_of?(Pawn) && positions[x + 1][y].double_stepped == true
+					@possible_moves << [x, y]
 				end
 			end
 
+			if @color == "black"
+				if positions[x - 1][y].instance_of?(Pawn) && positions[x - 1][y].double_stepped = true
+					@possible_moves << [x, y]
+				end
+			end
 		end
 	end
 end

@@ -73,7 +73,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def display
-		clear
+		#clear
 		title
 		top_row
 		square = 1
@@ -211,15 +211,13 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def move(current, new)
-		if castle?(current, new)
-			puts "hello"
-			temp = @positions[current[0]][current[1]]
-			@positions[current[0]][current[1]] = nil
-			temp.x_position = new[0]
-			temp.y_position = new[1]
-			temp.has_moved = true
-			@positions[new[0]][new[1]] = temp
+		double_stepped = check_for_double_step(current, new) 
 
+		if en_passant?(current, new) 
+			@positions[current[0]][new[1]] = nil
+		end
+
+		if castle?(current, new)
 			case new
 			when [7, 2]
 				temp = @positions[7][0]
@@ -238,21 +236,42 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 				@positions[0][7] = nil
 				@positions[0][5] = temp
 			end
-		else
-			temp = @positions[current[0]][current[1]]
-			temp.x_position = new[0]
-			temp.y_position = new[1]
-			temp.has_moved = true if temp.instance_of?(King) || temp.instance_of?(Rook) || temp.instance_of?(Pawn)
-			@positions[current[0]][current[1]] = nil
-			@positions[new[0]][new[1]] = temp
 		end
+		temp = @positions[current[0]][current[1]]
+		temp.x_position = new[0]
+		temp.y_position = new[1]
+			
+		@positions[current[0]][current[1]] = nil
+		@positions[new[0]][new[1]] = temp
+
+		temp.has_moved = true if temp.instance_of?(King) || temp.instance_of?(Rook) || temp.instance_of?(Pawn)
+		temp.double_stepped = false if temp.double_stepped == true
+		temp.double_stepped = true if double_stepped
+
 		display
+	end
+
+	def check_for_double_step(current, new)
+		piece = @positions[current[0]][current[1]]
+		if piece.instance_of?(Pawn) && (piece.x_position - new[0]).abs == 2
+			return true
+		end
+		false
 	end
 
 	def castle?(current, new)
 		castle_moves = [[7, 2], [7, 6], [0, 2], [0, 6]]
 		piece = @positions[current[0]][current[1]]
 		if piece.instance_of?(King) && piece.has_moved == false && castle_moves.include?(new)
+			return true
+		end
+		false
+	end
+
+	def en_passant?(current, new) 
+		piece = @positions[current[0]][current[1]]
+
+		if piece.instance_of?(Pawn) && @positions[new[0]][new[1]].nil? && current[1] != new[1]
 			return true
 		end
 		false
