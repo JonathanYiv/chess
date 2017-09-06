@@ -203,17 +203,59 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 	def update_possible_moves
 		@positions.flatten.each do |piece|
-			piece&.find_possible_moves(@positions)
+			piece&.find_possible_moves(@positions) unless piece.instance_of?(King)
+		end
+		@positions.flatten.each do |piece|
+			piece&.find_possible_moves(@positions) if piece.instance_of?(King)
 		end
 	end
 
 	def move(current, new)
-		temp = @positions[current[0]][current[1]]
-		temp.x_position = new[0]
-		temp.y_position = new[1]
-		@positions[current[0]][current[1]] = nil
-		@positions[new[0]][new[1]] = temp
+		if castle?(current, new)
+			puts "hello"
+			temp = @positions[current[0]][current[1]]
+			@positions[current[0]][current[1]] = nil
+			temp.x_position = new[0]
+			temp.y_position = new[1]
+			temp.has_moved = true
+			@positions[new[0]][new[1]] = temp
+
+			case new
+			when [7, 2]
+				temp = @positions[7][0]
+				@positions[7][0] = nil
+				@positions[7][3] = temp
+			when [7, 6]
+				temp = @positions[7][7]
+				@positions[7][7] = nil
+				@positions[7][5] = temp
+			when [0, 2]
+				temp = @positions[0][0]
+				@positions[0][0] = nil
+				@positions[0][3] = temp
+			when [0, 6]
+				temp = @positions[0][7]
+				@positions[0][7] = nil
+				@positions[0][5] = temp
+			end
+		else
+			temp = @positions[current[0]][current[1]]
+			temp.x_position = new[0]
+			temp.y_position = new[1]
+			temp.has_moved = true if temp.instance_of?(King) || temp.instance_of?(Rook) || temp.instance_of?(Pawn)
+			@positions[current[0]][current[1]] = nil
+			@positions[new[0]][new[1]] = temp
+		end
 		display
+	end
+
+	def castle?(current, new)
+		castle_moves = [[7, 2], [7, 6], [0, 2], [0, 6]]
+		piece = @positions[current[0]][current[1]]
+		if piece.instance_of?(King) && piece.has_moved == false && castle_moves.include?(new)
+			return true
+		end
+		false
 	end
 
 	def promote?
@@ -226,7 +268,6 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def promote(pawn)
-		# promotes a pawn to a queen/rook/knight/bishop
 		player = @turn_counter % 2 == 0 ? @player1 : @player2
 		acceptable_input = ["queen", "knight", "rook", "bishop"]
 		print "Your Pawn has reached the end of the board, #{player.name.bold}!\n\n"

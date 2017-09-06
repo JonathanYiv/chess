@@ -69,6 +69,7 @@ class King
 				@possible_moves << [x, y] if !test_knight.in_check?(test_positions) && (positions[x][y].nil? || positions[x][y].color != @color)
 			end
 		end
+		check_for_castle(positions) if @has_moved == false
 	end
 
 	def in_check?(positions)
@@ -84,5 +85,29 @@ class King
 		end
 
 		in_check
+	end
+
+	def check_for_castle(positions)
+		x = @color == "white" ? 7 : 0
+
+		if positions[x][0]&.has_moved == false 
+			if positions[x][1].nil? && positions[x][2].nil? && positions[x][3].nil?
+				valid = true
+				positions.flatten.select { |square| !square.nil? && square.color != @color }.each do |piece|
+					valid = false if piece.possible_moves.include?([x, 2])
+				end
+				@possible_moves << [x, 2] if valid
+			end
+		end
+
+		if positions[x][7]&.has_moved == false
+			if positions[x][5].nil? && positions[x][6].nil?
+				valid = true
+				positions.flatten.select { |square| !square.nil? && square.color != @color }.each do |piece|
+					valid = false if piece.possible_moves.include?([x, 6])
+				end
+				@possible_moves << [x, 6] if valid
+			end
+		end
 	end
 end
