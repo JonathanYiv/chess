@@ -143,13 +143,13 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 			end
 			@turn_counter += 1
 			
-			promote_pawn = promote?
+			promote_pawn = promote? # should this be moved to the move method to keep like things together?
 			promote(promote_pawn) if !promote_pawn.nil?
 		end
 		@turn_counter % 2 == 0 ? win(@player1) : win(@player2)
 	end
 
-	def turn
+	def turn # this needs to be refactored
 		player = @turn_counter % 2 == 0 ? @player2 : @player1
 		color = @turn_counter % 2 == 0 ? "black" : "white"
 		print "It's your turn, #{player.name.bold}! What are you going to do?\n\n"
@@ -172,7 +172,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		update_possible_moves
 	end
 
-	def check_turn
+	def check_turn # this needs to be refactored, possibly mixed into #turn
 		player = @turn_counter % 2 == 0 ? @player2 : @player1
 		color = @turn_counter % 2 == 0 ? "black" : "white"
 
@@ -210,7 +210,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		end
 	end
 
-	def move(current, new)
+	def move(current, new) # this needs to be refactored
 		double_stepped = check_for_double_step(current, new) 
 
 		if en_passant?(current, new) 
@@ -286,7 +286,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		promote_pawn
 	end
 
-	def promote(pawn)
+	def promote(pawn) # this needs to be refactored
 		player = @turn_counter % 2 == 0 ? @player1 : @player2
 		acceptable_input = ["queen", "knight", "rook", "bishop"]
 		print "Your Pawn has reached the end of the board, #{player.name.bold}!\n\n"

@@ -27,7 +27,7 @@ class Pawn
 			x = @x_position + @moveset[move_type][0]
 			y = @y_position + @moveset[move_type][1]
 
-			if valid_position?(x, y)
+			if within_board?(x, y)
 				case move_type
 				when :one_step
 					@possible_moves << [x, y] if positions[x][y].nil?
@@ -42,9 +42,6 @@ class Pawn
 	end
 
 	def add_en_passant(positions, x, y)
-		# if position is nil
-		# if a pawn is directly above (black)/below (white) the position
-		# if the pawn just made a double step
 		if positions[x][y].nil?
 			if @color == "white"
 				if positions[x + 1][y].instance_of?(Pawn) && positions[x + 1][y].double_stepped == true

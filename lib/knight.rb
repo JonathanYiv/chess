@@ -28,7 +28,7 @@ class Knight
 			x = @x_position + move[0]
 			y = @y_position + move[1]
 
-			if valid_position?(x,y)
+			if within_board?(x,y)
 				@possible_moves << [x, y] if positions[x][y].nil? || positions[x][y].color != @color
 			end
 		end

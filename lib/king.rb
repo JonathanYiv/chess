@@ -22,16 +22,16 @@ class King
 		@color =  is_white ? "white" : "black"
 	end
 
-	def find_possible_moves(positions)
+	def find_possible_moves(positions) # this method needs to be broken into multiple
 		@possible_moves = []
 
 		@moveset.each do |move|
 			x = @x_position + move[0]
 			y = @y_position + move[1]
 
-			if valid_position?(x, y)
+			if within_board?(x, y)
 
-				test_positions = Array.new(8) { Array.new(8, nil) }
+				test_positions = Array.new(8) { Array.new(8, nil) } # this can be a separate method
 				positions.each_with_index do |row, row_index|
 					row.each_with_index do |column, column_index|
 						if positions[row_index][column_index].nil?
@@ -48,8 +48,8 @@ class King
 				end
 
 				test_positions[@x_position][@y_position] = nil
-				test_knight = King.new([x, y], @color == "white")
-				test_positions[x][y] = test_knight
+				test_king = King.new([x, y], @color == "white")
+				test_positions[x][y] = test_king
 
 				test_positions.flatten.select { |square| square !=  nil && square.color != color }.each do |piece| 
 					if piece.instance_of?(King)
@@ -57,7 +57,7 @@ class King
 							a = piece.x_position + test_move[0]
 							b = piece.y_position + test_move[1]
 
-							if valid_position?(a, b)
+							if within_board?(a, b)
 								piece.possible_moves << [a, b]
 							end
 						end
@@ -66,7 +66,7 @@ class King
 					end
 				end
 				
-				@possible_moves << [x, y] if !test_knight.in_check?(test_positions) && (positions[x][y].nil? || positions[x][y].color != @color)
+				@possible_moves << [x, y] if !test_king.in_check?(test_positions) && (positions[x][y].nil? || positions[x][y].color != @color)
 			end
 		end
 		check_for_castle(positions) if @has_moved == false
