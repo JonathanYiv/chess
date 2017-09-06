@@ -175,3 +175,5 @@ This project is currently incomplete.
 		3. If variable is not nil, it will call the method.
 
 4. I have tried changing GitHub's tab size to 2, even modifying the file itself by ending a comment or something, but it always reverts to a displayed tab size of 8. Does anyone know how to fix this?
+
+5. Thanks to some feedback from @hwchan91, I made several changes to make my code more modular and readable, including changing the name of some variables/methods and splitting a few large methods into multiple smaller methods.

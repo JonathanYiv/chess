@@ -32,7 +32,7 @@ class Pawn
 				when :one_step
 					@possible_moves << [x, y] if positions[x][y].nil?
 				when :double_step
-					@possible_moves << [x, y] if positions[x][y].nil? && positions[(x + @x_position) / 2][y].nil? && @has_moved == false # still need to implement @has_moved
+					@possible_moves << [x, y] if positions[x][y].nil? && positions[(x + @x_position) / 2][y].nil? && @has_moved == false
 				when :right_diagonal, :left_diagonal
 					@possible_moves << [x, y] if !positions[x][y].nil? && positions[x][y].color != @color
 					add_en_passant(positions, x, y)
@@ -41,7 +41,7 @@ class Pawn
 		end
 	end
 
-	def add_en_passant(positions, x, y)
+	def add_en_passant(positions, x, y) # could probably add a ternary assignment operator for the x + (1)/(-1) logic to reduce a nested if
 		if positions[x][y].nil?
 			if @color == "white"
 				if positions[x + 1][y].instance_of?(Pawn) && positions[x + 1][y].double_stepped == true

@@ -21,27 +21,18 @@ class Queen
 		@color =  is_white ? "white" : "black"
 	end
 
-	def find_possible_moves(positions) # this needs to be refactored
+	def find_possible_moves(positions)
 		@possible_moves = []
 		
 		@moveset.each do |move|
-			x = @x_position + move[0]
-			y = @y_position + move[1]
-			max_found = false
+			x, y = @x_position + move[0], @y_position + move[1]
 
-			until max_found == true
-				if within_board?(x,y)
-					if positions[x][y] != nil
-						@possible_moves << [x,y] if positions[x][y].color != @color
-						max_found = true
-					else
-						@possible_moves << [x,y]
-					end
-				else
-					max_found = true
-				end
-				x = x + move[0]
-				y = y + move[1]
+			loop do
+				break if within_board?(x, y) == false
+				@possible_moves << [x, y] if positions[x][y].nil? || positions[x][y].color != @color
+				break if !positions[x][y].nil?
+				x += move[0]
+				y += move[1]
 			end
 		end
 	end

@@ -15,7 +15,7 @@ class GameBoard
 		@positions = Array.new(8) { Array.new(8, nil) }
 		@player1 = nil
 		@player2 = nil
-		@turn_counter = 1
+		@turn_counter = 0
 	end
 
 	def place_pieces
@@ -73,7 +73,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def display
-		#clear
+		clear
 		title
 		top_row
 		square = 1
@@ -136,59 +136,55 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	def turns
 		update_possible_moves
 		until checkmate?
+			@turn_counter += 1
 			if check?
 				check_turn
 			else
 				turn
 			end
-			@turn_counter += 1
-			
-			promote_pawn = promote? # should this be moved to the move method to keep like things together?
-			promote(promote_pawn) if !promote_pawn.nil?
 		end
-		@turn_counter % 2 == 0 ? win(@player1) : win(@player2)
+		win(turn_player)
 	end
 
-	def turn # this needs to be refactored
-		player = @turn_counter % 2 == 0 ? @player2 : @player1
-		color = @turn_counter % 2 == 0 ? "black" : "white"
-		print "It's your turn, #{player.name.bold}! What are you going to do?\n\n"
+	def turn_player
+		@turn_counter % 2 == 0 ? @player2 : @player1
+	end
+
+	def turn_color
+		@turn_counter % 2 == 0 ? "black" : "white"
+	end
+
+	def turn # both turn and check_turn should be combined into one method, with the breaking condition perhaps yielding to a block with the necessary conditions
+		print "It's your turn, #{turn_player.name.bold}! What are you going to do?\n\n"
 		print "Notate your move in the form of: 'B1 to C3'\n> "
 
-		move = player.get_move
-		piece_position = convert([move[2], move[1]])
-		piece_move_position = convert([move[4], move[3]])
-		piece = @positions[piece_position[0]][piece_position[1]]
-		
-		until piece.possible_moves.include?(piece_move_position) && piece.color == color
-			print "\nHmm.. That doesn't appear to be a valid move. Please try again:\n> "
-			move = player.get_move
+		move, piece_position, piece_move_position = nil, nil, nil
+
+		loop do
+			move = turn_player.get_move
 			piece_position = convert([move[2], move[1]])
 			piece_move_position = convert([move[4], move[3]])
 			piece = @positions[piece_position[0]][piece_position[1]]
+			break if piece.possible_moves.include?(piece_move_position) && piece.color == turn_color
+			print "\nHmm.. That doesn't appear to be a valid move. Please try again:\n> "
 		end
 
 		move(piece_position, piece_move_position)
 		update_possible_moves
 	end
 
-	def check_turn # this needs to be refactored, possibly mixed into #turn
-		player = @turn_counter % 2 == 0 ? @player2 : @player1
-		color = @turn_counter % 2 == 0 ? "black" : "white"
+	def check_turn
+		print "Your King is in check, #{turn_player.name.bold}! You better do something!\n> "
 
-		print "Your King is in check, #{player.name.bold}! You better do something!\n> "
+		move, piece_position, piece_move_position = nil, nil, nil
 
-		move = player.get_move
-		piece_position = convert([move[2], move[1]])
-		piece_move_position = convert([move[4], move[3]])
-		piece = @positions[piece_position[0]][piece_position[1]]
-
-		until piece.possible_moves.include?(piece_move_position) && piece.color == color && piece.instance_of?(King)
-			print "\nThat still leaves your King in check. Try again:\n> "
-			move = player.get_move
+		loop do 
+			move = turn_player.get_move
 			piece_position = convert([move[2], move[1]])
 			piece_move_position = convert([move[4], move[3]])
 			piece = @positions[piece_position[0]][piece_position[1]]
+			break if piece.possible_moves.include?(piece_move_position) && piece.color == turn_color && piece.instance_of?(King)
+			print "\nThat still leaves your King in check. Try again:\n> "
 		end
 
 		move(piece_position, piece_move_position)
@@ -210,7 +206,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		end
 	end
 
-	def move(current, new) # this needs to be refactored
+	def move(current, new) # this needs to be split into multiple methods
 		double_stepped = check_for_double_step(current, new) 
 
 		if en_passant?(current, new) 
@@ -245,8 +241,14 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		@positions[new[0]][new[1]] = temp
 
 		temp.has_moved = true if temp.instance_of?(King) || temp.instance_of?(Rook) || temp.instance_of?(Pawn)
-		temp.double_stepped = false if temp.double_stepped == true
-		temp.double_stepped = true if double_stepped
+
+		if temp.instance_of?(Pawn)
+			temp.double_stepped = false if temp.double_stepped == true
+			temp.double_stepped = true if double_stepped
+		end
+
+		promote_pawn = promote?
+		promote(promote_pawn) if !promote_pawn.nil?
 
 		display
 	end
@@ -287,9 +289,8 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def promote(pawn) # this needs to be refactored
-		player = @turn_counter % 2 == 0 ? @player1 : @player2
 		acceptable_input = ["queen", "knight", "rook", "bishop"]
-		print "Your Pawn has reached the end of the board, #{player.name.bold}!\n\n"
+		print "\nYour Pawn has reached the end of the board, #{turn_player.name.bold}!\n\n"
 		print "You can promote your Pawn into a Queen, Knight, Rook, or Bishop. Please input which:\n> "
 		promotion = gets.chomp.downcase
 
@@ -308,12 +309,10 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		when "bishop"
 			@positions[pawn.x_position][pawn.y_position] = Bishop.new([pawn.x_position, pawn.y_position], pawn.color)
 		end
-
-		display
 	end
 
 	def check?
-		color = @turn_counter % 2 == 0 ? "black" : "white"
+		color = turn_color
 		@positions.flatten.select { |square| square.instance_of?(King) && square.color == color }.each do |king|
 			if king.in_check?(@positions)
 				return true
@@ -323,7 +322,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def checkmate?
-		color = @turn_counter % 2 == 0 ? "black" : "white"
+		color = turn_color
 		@positions.flatten.select {|square| square.instance_of?(King) && square.color == color }.each do |king|
 			return false if !king.in_check?(@positions)
 			return false if !king.possible_moves.empty?
