@@ -73,7 +73,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def display
-		#clear
+		clear
 		title
 		top_row
 		square = 1
@@ -142,7 +142,9 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 				turn
 			end
 			@turn_counter += 1
-			# needs #promote?
+			
+			promote_pawn = promote?
+			promote(promote_pawn) if !promote_pawn.nil?
 		end
 		@turn_counter % 2 == 0 ? win(@player1) : win(@player2)
 	end
@@ -174,24 +176,20 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		player = @turn_counter % 2 == 0 ? @player2 : @player1
 		color = @turn_counter % 2 == 0 ? "black" : "white"
 
-		print "Your King is in check, #{player.name.bold}! You better get out of the way!\n> "
+		print "Your King is in check, #{player.name.bold}! You better do something!\n> "
 
 		move = player.get_move
 		piece_position = convert([move[2], move[1]])
 		piece_move_position = convert([move[4], move[3]])
 		piece = @positions[piece_position[0]][piece_position[1]]
 
-
-		
 		until piece.possible_moves.include?(piece_move_position) && piece.color == color && piece.instance_of?(King)
-			print "\nKeep in mind you have to move your King. Try again:\n> "
+			print "\nThat still leaves your King in check. Try again:\n> "
 			move = player.get_move
 			piece_position = convert([move[2], move[1]])
 			piece_move_position = convert([move[4], move[3]])
 			piece = @positions[piece_position[0]][piece_position[1]]
 		end
-
-
 
 		move(piece_position, piece_move_position)
 		update_possible_moves
@@ -219,11 +217,39 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def promote?
-		# checks if a pawn has reached the end of the board
+		promote_pawn = nil
+		0.upto(7) do |x|
+			promote_pawn = @positions[0][x] if @positions[0][x].instance_of?(Pawn)
+			promote_pawn = @positions[7][x] if @positions[7][x].instance_of?(Pawn)
+		end
+		promote_pawn
 	end
 
-	def promote
+	def promote(pawn)
 		# promotes a pawn to a queen/rook/knight/bishop
+		player = @turn_counter % 2 == 0 ? @player1 : @player2
+		acceptable_input = ["queen", "knight", "rook", "bishop"]
+		print "Your Pawn has reached the end of the board, #{player.name.bold}!\n\n"
+		print "You can promote your Pawn into a Queen, Knight, Rook, or Bishop. Please input which:\n> "
+		promotion = gets.chomp.downcase
+
+		until acceptable_input.include?(promotion)
+			print "\n That doesn't appear to be something you can promote a pawn to.. Try again:\n> "
+			promotion = gets.chomp.downcase
+		end
+
+		case promotion
+		when "queen"
+			@positions[pawn.x_position][pawn.y_position] = Queen.new([pawn.x_position, pawn.y_position], pawn.color)
+		when "knight"
+			@positions[pawn.x_position][pawn.y_position] = Knight.new([pawn.x_position, pawn.y_position], pawn.color)
+		when "rook"
+			@positions[pawn.x_position][pawn.y_position] = Rook.new([pawn.x_position, pawn.y_position], pawn.color)
+		when "bishop"
+			@positions[pawn.x_position][pawn.y_position] = Bishop.new([pawn.x_position, pawn.y_position], pawn.color)
+		end
+
+		display
 	end
 
 	def check?
@@ -236,14 +262,16 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		false
 	end
 
-	def checkmate? # not implemented
+	def checkmate?
 		color = @turn_counter % 2 == 0 ? "black" : "white"
 		@positions.flatten.select {|square| square.instance_of?(King) && square.color == color }.each do |king|
-			if king.in_check?(@positions) && king.possible_moves.empty?
-				return true
-			end
+			return false if !king.in_check?(@positions)
+			return false if !king.possible_moves.empty?
+			# can piece checking be captured?
+			# can piece move to block the check?
+			# return true
 		end
-		false
+		false # temporary line
 	end
 
 	def win(player)
