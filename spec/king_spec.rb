@@ -79,7 +79,43 @@ describe King do
 			expect( king.possible_moves ).not_to include([3,3], [3,4], [3,5])
 		end
 
-		it "should allow castling"
+		context "castling" do
+			it "allows black king to castle to the right" do
+				castle_king = King.new([0, 4], false)
+				castle_rook = Rook.new([0, 7], false)
+				gameboard.positions[0][4] = castle_king
+				gameboard.positions[0][7] = castle_rook
+				gameboard.update_possible_moves
+				expect( castle_king.possible_moves ).to include([0, 6])
+			end
+
+			it "allows black king to castle to the left" do
+				castle_king = King.new([0, 4], false)
+				castle_rook = Rook.new([0, 0], false)
+				gameboard.positions[0][4] = castle_king
+				gameboard.positions[0][0] = castle_rook
+				gameboard.update_possible_moves
+				expect( castle_king.possible_moves ).to include([0, 2])
+			end
+
+			it "allows white king to castle to the right" do
+				castle_king = King.new([7, 4], true)
+				castle_rook = Rook.new([7, 7], true)
+				gameboard.positions[7][4] = castle_king
+				gameboard.positions[7][7] = castle_rook
+				gameboard.update_possible_moves
+				expect( castle_king.possible_moves ).to include([7, 6])
+			end
+
+			it "allows white king to castle to the left" do
+				castle_king = King.new([7, 4], true)
+				castle_rook = Rook.new([7, 0], true)
+				gameboard.positions[7][4] = castle_king
+				gameboard.positions[7][0] = castle_rook
+				gameboard.update_possible_moves
+				expect( castle_king.possible_moves ).to include([7, 2])
+			end
+		end
 	end
 
 	context "in check" do
@@ -119,7 +155,6 @@ describe King do
 			game = GameBoard.new
 			game.place_pieces
 			game.update_possible_moves
-			#game.positions[0][4].find_possible_moves(game.positions)
 			expect( game.positions[0][4].possible_moves ).not_to include([1,4])
 		end
 	end
