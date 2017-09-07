@@ -88,7 +88,7 @@ class King
 	def check_for_castle(positions)
 		x = @color == "white" ? 7 : 0
 
-		if positions[x][0]&.has_moved == false 
+		if positions[x][0].instance_of?(Rook) && positions[x][0]&.has_moved == false 
 			if positions[x][1].nil? && positions[x][2].nil? && positions[x][3].nil?
 				valid = true
 				positions.flatten.select { |square| !square.nil? && square.color != @color }.each do |piece|
@@ -98,7 +98,7 @@ class King
 			end
 		end
 
-		if positions[x][7]&.has_moved == false
+		if positions[x][7].instance_of?(Rook) && positions[x][7]&.has_moved == false
 			if positions[x][5].nil? && positions[x][6].nil?
 				valid = true
 				positions.flatten.select { |square| !square.nil? && square.color != @color }.each do |piece|
