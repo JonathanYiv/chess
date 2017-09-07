@@ -379,7 +379,6 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 			piece.possible_moves.each do |move|
 				# return true if breaks_check?([piece.x_position, piece.y_position], move)
 				if breaks_check?([piece.x_position, piece.y_position], move) #testing
-					puts piece.inspect
 					return true
 				end
 			end
