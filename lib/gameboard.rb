@@ -135,8 +135,8 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 	def turns
 		update_possible_moves
-		until checkmate?
-			@turn_counter += 1
+		until checkmate? == true
+			#@turn_counter += 1
 			if check?
 				check_turn
 			else
@@ -144,6 +144,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 			end
 			display
 		end
+		@turn_counter -= 1
 		win(turn_player)
 	end
 
@@ -178,12 +179,11 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 		move, piece_position, piece_move_position = nil, nil, nil
 
-		loop do # eventually need to allow other pieces to capture the checking piece or block the checking piece
+		loop do
 			move = turn_player.get_move
 			piece_position = convert([move[2], move[1]])
 			piece_move_position = convert([move[4], move[3]])
 			piece = @positions[piece_position[0]][piece_position[1]]
-			#break if piece.possible_moves.include?(piece_move_position) && piece.color == turn_color && piece.instance_of?(King)
 			break if piece.possible_moves.include?(piece_move_position) && piece.color == turn_color && breaks_check?(piece_position, piece_move_position) == true
 			print "\nThat still leaves your King in check. Try again:\n> "
 		end
@@ -191,21 +191,15 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		move(piece_position, piece_move_position)
 	end
 
-	def breaks_check?(current, new)
-		# given a current position, takes the piece at the current position and moves it to the new position, and updates all possible moves
-		# it then finds the appropriately colored King, identifies if the King is still in check
-		# If the King is not in check, breaks_check? returns true
-		# If the King IS in check, breaks_check? returns false
-		# It then resets the board. It moves the piece at the new position to the current position, and updates all possible moves again
-		# probably use a deep clone to 'cache' the original values, make changes, then reset the original values
+	def breaks_check?(current, new) # this doesn't appear to be working correctly
 		breaks_check = false
 		cache = clone_positions
 
 		move(current, new)
-
-		@positions.flatten.select { |square| !square.nil? && square.instance_of?(King) && square.color == turn_color }.each do |king|
+		@positions.flatten.select { |square| !square.nil? && square.instance_of?(King) && square.color == turn_color }.each do |king| #turn_color is incorrect if coming from any_breaks_check
 			breaks_check = true if king.in_check?(@positions) == false
 		end
+		#binding.pry
 		@positions = cache
 		update_possible_moves
 		breaks_check
@@ -255,18 +249,26 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 				temp = @positions[7][0]
 				@positions[7][0] = nil
 				@positions[7][3] = temp
+				temp.x_position = 7
+				temp.y_position = 3
 			when [7, 6]
 				temp = @positions[7][7]
 				@positions[7][7] = nil
 				@positions[7][5] = temp
+				temp.x_position = 7
+				temp.y_position = 5
 			when [0, 2]
 				temp = @positions[0][0]
 				@positions[0][0] = nil
 				@positions[0][3] = temp
+				temp.x_position = 0
+				temp.y_position = 3
 			when [0, 6]
 				temp = @positions[0][7]
 				@positions[0][7] = nil
 				@positions[0][5] = temp
+				temp.x_position = 0
+				temp.y_position = 5
 			end
 		end
 		temp = @positions[current[0]][current[1]]
@@ -357,15 +359,32 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def checkmate?
-		color = turn_color
-		@positions.flatten.select {|square| square.instance_of?(King) && square.color == color }.each do |king|
+		@turn_counter += 1
+		@positions.flatten.select {|square| square.instance_of?(King) && square.color == turn_color }.each do |king|
 			return false if !king.in_check?(@positions)
+			return false if any_breaks_checks? == true # in testing
 			return false if !king.possible_moves.empty?
 			# can piece checking be captured?
 			# can piece move to block the check?
 			# return true
 		end
-		false # temporary line
+		true
+	end
+
+	def any_breaks_checks? # this doesn't work, first fix #breaks_check?
+		# returns true if there are any moves that will break the check
+		# returns false if there are no moves that will break the check
+		# iterates through every correctly colored piece and their possible moves, using the #breaks_check? method to verify whether the move will break check
+		@positions.flatten.select { |square| !square.nil? && square.color == turn_color }.each do |piece|
+			piece.possible_moves.each do |move|
+				# return true if breaks_check?([piece.x_position, piece.y_position], move)
+				if breaks_check?([piece.x_position, piece.y_position], move) #testing
+					puts piece.inspect
+					return true
+				end
+			end
+		end
+		false
 	end
 
 	def win(player)
