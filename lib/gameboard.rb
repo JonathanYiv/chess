@@ -142,6 +142,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 			else
 				turn
 			end
+			display
 		end
 		win(turn_player)
 	end
@@ -170,7 +171,6 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		end
 
 		move(piece_position, piece_move_position)
-		update_possible_moves
 	end
 
 	def check_turn
@@ -178,17 +178,53 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 		move, piece_position, piece_move_position = nil, nil, nil
 
-		loop do 
+		loop do # eventually need to allow other pieces to capture the checking piece or block the checking piece
 			move = turn_player.get_move
 			piece_position = convert([move[2], move[1]])
 			piece_move_position = convert([move[4], move[3]])
 			piece = @positions[piece_position[0]][piece_position[1]]
-			break if piece.possible_moves.include?(piece_move_position) && piece.color == turn_color && piece.instance_of?(King)
+			#break if piece.possible_moves.include?(piece_move_position) && piece.color == turn_color && piece.instance_of?(King)
+			break if piece.possible_moves.include?(piece_move_position) && piece.color == turn_color && breaks_check?(piece_position, piece_move_position) == true
 			print "\nThat still leaves your King in check. Try again:\n> "
 		end
 
 		move(piece_position, piece_move_position)
+	end
+
+	def breaks_check?(current, new)
+		# given a current position, takes the piece at the current position and moves it to the new position, and updates all possible moves
+		# it then finds the appropriately colored King, identifies if the King is still in check
+		# If the King is not in check, breaks_check? returns true
+		# If the King IS in check, breaks_check? returns false
+		# It then resets the board. It moves the piece at the new position to the current position, and updates all possible moves again
+		# probably use a deep clone to 'cache' the original values, make changes, then reset the original values
+		breaks_check = false
+		cache = clone_positions
+
+		move(current, new)
+
+		@positions.flatten.select { |square| !square.nil? && square.instance_of?(King) && square.color == turn_color }.each do |king|
+			breaks_check = true if king.in_check?(@positions) == false
+		end
+		@positions = cache
 		update_possible_moves
+		breaks_check
+	end
+
+	def clone_positions
+		cache = Array.new(8) { Array.new(8, nil) }
+		0.upto(7) do |x|
+			0.upto(7) do |y|
+				original = @positions[x][y]
+				copy = original.nil? ? nil : original.class.new([x, y], original.color == "white")
+				cache[x][y] = copy
+				if original.instance_of?(King) || original.instance_of?(Pawn) || original.instance_of?(Rook)
+					copy.has_moved = original.has_moved
+					copy.double_stepped = original.double_stepped if original.instance_of?(Pawn)
+				end
+			end
+		end
+		cache
 	end
 
 	def convert(array)
@@ -249,8 +285,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 		promote_pawn = promote?
 		promote(promote_pawn) if !promote_pawn.nil?
-
-		display
+		update_possible_moves
 	end
 
 	def check_for_double_step(current, new)

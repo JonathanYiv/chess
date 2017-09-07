@@ -31,21 +31,19 @@ class King
 
 			if within_board?(x, y)
 
-				test_positions = Array.new(8) { Array.new(8, nil) } # this can be a separate method
-				positions.each_with_index do |row, row_index|
-					row.each_with_index do |column, column_index|
-						if positions[row_index][column_index].nil?
-							test_positions[row_index][column_index] = nil
-						else
-							c = positions[row_index][column_index].class
-							x_pos = row_index
-							y_pos = column_index
-							color = positions[row_index][column_index].color == "white"
-							copy = c.new([x_pos, y_pos], color)
-							test_positions[row_index][column_index] = copy
+				test_positions = Array.new(8) { Array.new(8, nil) }
+				0.upto(7) do |x|
+					0.upto(7) do |y|
+						original = positions[x][y]
+						copy = original.nil? ? nil : original.class.new([x, y], original.color == "white")
+						test_positions[x][y] = copy
+						if original.instance_of?(King) || original.instance_of?(Pawn) || original.instance_of?(Rook)
+							copy.has_moved = original.has_moved
+							copy.double_stepped = original.double_stepped if original.instance_of?(Pawn)
 						end
 					end
 				end
+
 
 				test_positions[@x_position][@y_position] = nil
 				test_king = King.new([x, y], @color == "white")
