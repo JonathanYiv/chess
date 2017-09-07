@@ -177,3 +177,13 @@ This project is currently incomplete.
 4. I have tried changing GitHub's tab size to 2, even modifying the file itself by ending a comment or something, but it always reverts to a displayed tab size of 8. Does anyone know how to fix this?
 
 5. Thanks to some feedback from @hwchan91, I made several changes to make my code more modular and readable, including changing the name of some variables/methods and splitting a few large methods into multiple smaller methods.
+
+6. After completing the project, I realized there are several areas I need to improve upon:
+
+	1. Making methods more modular. Right now, my methods do too much. I should have been better able to abstract concepts and make more methods doing less things.
+
+	2. Debugging. Going into this project, I mostly did output debugging. With this project, I've used a lot more testing and pry as additional tools to help me narrow down the problem. This process was slow for me because I had to think about what I was doing. With more practice, I hope my debugging skills improve.
+
+	3. More coverage with unit tests. Sometimes in a rush, I would simply fully write the method without writing any tests. Sometimes these methods would perform complicated procedures and it would bite me in the butt later when the method had undesired behavior. I'd have to go back and write tests for specific scenarios and then hunt down where exactly it broke.
+
+7. Overall, I am very happy that I completed this project. It was a worthy venture.
