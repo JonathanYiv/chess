@@ -7,6 +7,7 @@ require_relative "king.rb"
 require_relative "pawn.rb"
 require_relative "string.rb"
 require "pry"
+require "yaml"
 
 class GameBoard
 	attr_accessor :positions, :player1, :player2, :turn_counter
@@ -136,7 +137,6 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	def turns
 		update_possible_moves
 		until checkmate? == true
-			#@turn_counter += 1
 			if check?
 				check_turn
 			else
@@ -191,7 +191,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		move(piece_position, piece_move_position)
 	end
 
-	def breaks_check?(current, new) # this doesn't appear to be working correctly
+	def breaks_check?(current, new)
 		breaks_check = false
 		cache = clone_positions
 
@@ -199,7 +199,6 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		@positions.flatten.select { |square| !square.nil? && square.instance_of?(King) && square.color == turn_color }.each do |king| #turn_color is incorrect if coming from any_breaks_check
 			breaks_check = true if king.in_check?(@positions) == false
 		end
-		#binding.pry
 		@positions = cache
 		update_possible_moves
 		breaks_check
@@ -362,22 +361,15 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		@turn_counter += 1
 		@positions.flatten.select {|square| square.instance_of?(King) && square.color == turn_color }.each do |king|
 			return false if !king.in_check?(@positions)
-			return false if any_breaks_checks? == true # in testing
+			return false if any_breaks_checks? == true
 			return false if !king.possible_moves.empty?
-			# can piece checking be captured?
-			# can piece move to block the check?
-			# return true
 		end
 		true
 	end
 
-	def any_breaks_checks? # this doesn't work, first fix #breaks_check?
-		# returns true if there are any moves that will break the check
-		# returns false if there are no moves that will break the check
-		# iterates through every correctly colored piece and their possible moves, using the #breaks_check? method to verify whether the move will break check
+	def any_breaks_checks?
 		@positions.flatten.select { |square| !square.nil? && square.color == turn_color }.each do |piece|
 			piece.possible_moves.each do |move|
-				# return true if breaks_check?([piece.x_position, piece.y_position], move)
 				if breaks_check?([piece.x_position, piece.y_position], move) #testing
 					return true
 				end
@@ -390,9 +382,30 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		puts "Congratulations, #{player.name.bold}! You are the Champion!"
 	end
 
+# none of this works at the moment
 	def save
+		yaml = YAML.dump(data)
+
+		File.open("save_data.yaml", "w") { |file| file.puts yaml }
+
+		puts "Your game has been saved!\n\n"
+
+		exit
+	end
+
+	def data
+		{ "positions" 		=> @bositions,
+			"player1" 			=> @player1,
+			"player2" 			=> @player2,
+			"turn_counter" 	=> @turn_counter }
 	end
 
 	def load
+		yaml = YAML.load(File.open(save_data))
+
+		@positions 		= yaml["positions"]
+		@player1 			= yaml["player1"]
+		@player2 			= yaml["player2"]
+		@turn_counter = yaml["turn_counter"]
 	end
 end

@@ -26,3 +26,22 @@ class Player
 		true
 	end
 end
+
+=begin
+This is borrowed for inspiration from Lujan Fernaud's Chess Game code which is outstanding.
+https://github.com/lujanfernaud/ruby-chess/
+
+def sanitize(movement)
+   loop do
+    return board.possible_moves_for(movement) if movement =~ /\A[a-h][1-8]\z/
+
+    return movement  if movement =~ /\A[a-h][1-8][a-h][1-8]\z/
+    return save_game if movement =~ /save/
+    return load_game if movement =~ /load/
+    return finish    if movement =~ /exit/
+
+    movement = please_introduce_a_correct_movement
+  end
+end
+	
+=end
