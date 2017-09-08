@@ -187,3 +187,5 @@ This project is currently incomplete.
 	3. More coverage with unit tests. Sometimes in a rush, I would simply fully write the method without writing any tests. Sometimes these methods would perform complicated procedures and it would bite me in the butt later when the method had undesired behavior. I'd have to go back and write tests for specific scenarios and then hunt down where exactly it broke.
 
 7. Overall, I am very happy that I completed this project. It was a worthy venture.
+
+8. After the fact, I realized I had forgotten that one of the project requirements was the ability to save and load files. I am rather burnt out on chess at the moment, so I will come back later and implement it. Onwards to Rails!
