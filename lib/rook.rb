@@ -1,4 +1,5 @@
 require_relative "helper.rb"
+require_relative "board.rb"
 
 class Rook
 	attr_accessor :moveset, :x_position, :y_position, :possible_moves, :icon, :has_moved, :color
@@ -25,7 +26,7 @@ class Rook
 			x, y = @x_position + move[0], @y_position + move[1]
 
 			loop do
-				break if within_board?(x, y) == false
+				break if Board.includes?(x, y) == false
 				@possible_moves << [x, y] if positions[x][y].nil? || positions[x][y].color != @color
 				break if !positions[x][y].nil?
 				x += move[0]

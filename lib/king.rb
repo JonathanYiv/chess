@@ -1,4 +1,5 @@
 require_relative "helper.rb"
+require_relative "board.rb"
 
 class King
 	attr_accessor :moveset, :x_position, :y_position, :possible_moves, :icon, :has_moved, :color
@@ -29,7 +30,7 @@ class King
 			x = @x_position + move[0]
 			y = @y_position + move[1]
 
-			if within_board?(x, y)
+			if Board.includes?(x, y)
 
 				test_positions = Array.new(8) { Array.new(8, nil) }
 				0.upto(7) do |x|
@@ -55,7 +56,7 @@ class King
 							a = piece.x_position + test_move[0]
 							b = piece.y_position + test_move[1]
 
-							if within_board?(a, b)
+							if Board.includes?(a, b)
 								piece.possible_moves << [a, b]
 							end
 						end

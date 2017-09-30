@@ -1,4 +1,5 @@
 require_relative "helper.rb"
+require_relative "board.rb"
 
 class Pawn
 	attr_accessor :moveset, :x_position, :y_position, :possible_moves, :icon, :has_moved, :double_stepped, :color
@@ -27,7 +28,7 @@ class Pawn
 			x = @x_position + @moveset[move_type][0]
 			y = @y_position + @moveset[move_type][1]
 
-			if within_board?(x, y)
+			if Board.includes?(x, y)
 				case move_type
 				when :one_step
 					@possible_moves << [x, y] if positions[x][y].nil?

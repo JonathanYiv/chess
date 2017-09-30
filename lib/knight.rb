@@ -1,4 +1,5 @@
 require_relative "helper.rb"
+require_relative "board.rb"
 
 class Knight
 	attr_accessor :moveset, :x_position, :y_position, :icon, :possible_moves, :color
@@ -28,7 +29,7 @@ class Knight
 			x = @x_position + move[0]
 			y = @y_position + move[1]
 
-			if within_board?(x,y)
+			if Board.includes?(x,y)
 				@possible_moves << [x, y] if positions[x][y].nil? || positions[x][y].color != @color
 			end
 		end
