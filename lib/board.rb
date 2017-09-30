@@ -94,11 +94,27 @@ class Board
 		cache
 	end
 
+	def Board.clone(positions)
+		cache = Array.new(8) { Array.new(8, nil) }
+		0.upto(7) do |x|
+			0.upto(7) do |y|
+				original = positions[x][y]
+				copy = original.nil? ? nil : original.class.new([x, y], original.color == "white")
+				cache[x][y] = copy
+				if original.instance_of?(King) || original.instance_of?(Pawn) || original.instance_of?(Rook)
+					copy.has_moved = original.has_moved
+					copy.double_stepped = original.double_stepped if original.instance_of?(Pawn)
+				end
+			end
+		end
+		cache
+	end
+
 	def Board.includes?(x, y)
 		within_seven?(x) and within_seven?(y)
 	end
 
-	def within_seven?(number)
+	def Board.within_seven?(number)
 		(0..7).include?(number)
 	end
 end

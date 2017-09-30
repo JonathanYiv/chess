@@ -1,4 +1,3 @@
-require_relative "helper.rb"
 require_relative "board.rb"
 
 class Pawn
