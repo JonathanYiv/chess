@@ -4,7 +4,7 @@ The goal of this project is to implement a command line [Chess](https://en.wikip
 
 This is a project from [The Odin Project](https://www.theodinproject.com/courses/ruby-programming/lessons/ruby-final-project).
 
-![Screenshot](screenshot.png)
+![Screenshot](images/screenshot.png)
 
 ## Installation
 
@@ -48,7 +48,7 @@ $ ruby chess.rb
 
 		4. The King will not castle out of, through, or into check
 
-![Castling](castling.gif)
+![Castling](images/castling.gif)
 
 2. En Passant
 
@@ -66,7 +66,7 @@ $ ruby chess.rb
 
 		4. The capture can only be made on the move immediately after the double-step move.
 
-![En Passant](en_passant.gif)
+![En Passant](images/en_passant.gif)
 
 3. Promotion
 
@@ -76,7 +76,7 @@ $ ruby chess.rb
 
 		2. The choice is not limited to previously captured pieces.
 
-![Promotion](promotion.jpg)
+![Promotion](images/promotion.jpg)
 
 4. Check
 
@@ -90,7 +90,7 @@ $ ruby chess.rb
 
 		4. Kings may not move into check.
 
-![Check](check.gif)
+![Check](images/check.gif)
 
 ### Project Structure
 
