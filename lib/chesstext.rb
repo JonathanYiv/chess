@@ -15,11 +15,11 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	end
 
 	def ChessText.win(player)
-		puts "Congratulations, #{player.name.bold}! You are the Champion!"
+		puts "Congratulations, #{player}! You are the Champion!"
 	end
 
-	def ChessText.promotion_prompt
-		print "\nYour Pawn has reached the end of the board, #{turn_player.name.bold}!\n\n"
+	def ChessText.promotion_prompt(player)
+		print "\nYour Pawn has reached the end of the board, #{player}!\n\n"
 		print "You can promote your Pawn into a Queen, Knight, Rook, or Bishop. Please input which:\n> "
 	end
 

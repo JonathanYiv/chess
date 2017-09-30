@@ -135,7 +135,7 @@ class Game
 	end
 
 	def turn
-		print "It's your turn, #{turn_player.name.bold}! What are you going to do?\n\n"
+		print "It's your turn, #{turn_player}! What are you going to do?\n\n"
 		print "Notate your move in the form of: 'B1 to C3'\n> "
 
 		move, piece_position, piece_move_position = nil, nil, nil
@@ -153,7 +153,7 @@ class Game
 	end
 
 	def check_turn
-		print "Your King is in check, #{turn_player.name.bold}! You better do something!\n> "
+		print "Your King is in check, #{turn_player}! You better do something!\n> "
 
 		move, piece_position, piece_move_position = nil, nil, nil
 
@@ -306,7 +306,7 @@ class Game
 
 	def promote(pawn)
 		acceptable_input = ["queen", "knight", "rook", "bishop"]
-		ChessText.promotion
+		ChessText.promotion_prompt(turn_player)
 		promotion = gets.chomp.downcase
 
 		until acceptable_input.include?(promotion)

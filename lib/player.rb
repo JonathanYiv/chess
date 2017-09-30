@@ -1,8 +1,14 @@
+require_relative "string.rb"
+
 class Player
 	attr_accessor :name
 
 	def initialize(number)
 		@name = get_name(number)
+	end
+
+	def to_s
+		@name.bold
 	end
 
 	def get_name(number)
