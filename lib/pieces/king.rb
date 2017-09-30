@@ -1,7 +1,7 @@
 require_relative "../board.rb"
 
-class King
-	attr_accessor :moveset, :x_position, :y_position, :possible_moves, :icon, :has_moved, :color
+class King < Piece
+	attr_accessor :has_moved
 
 	def initialize(position, is_white)
 		@moveset = [
@@ -14,12 +14,8 @@ class King
 			[-1,0],
 			[-1,-1]
 		]
-		@x_position = position[0]
-		@y_position = position[1]
-		@possible_moves = []
-		@icon = is_white ? "♚" : "♔"
 		@has_moved = false
-		@color =  is_white ? "white" : "black"
+		super
 	end
 
 	def find_possible_moves(positions) # this method needs to be broken into multiple

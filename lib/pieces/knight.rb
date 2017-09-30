@@ -1,8 +1,6 @@
 require_relative "../board.rb"
 
-class Knight
-	attr_accessor :moveset, :x_position, :y_position, :icon, :possible_moves, :color
-
+class Knight < Piece
 	def initialize(position, is_white)
 		@moveset = [
 			[-1,-2],
@@ -14,11 +12,7 @@ class Knight
 			[+2,+1],
 			[+1,+2]
 		]
-		@x_position = position[0]
-		@y_position = position[1]
-		@possible_moves = []
-		@icon = is_white ? "♞" : "♘"
-		@color =  is_white ? "white" : "black"
+		super
 	end
 
 	def find_possible_moves(positions)

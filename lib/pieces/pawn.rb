@@ -1,7 +1,7 @@
 require_relative "../board.rb"
 
-class Pawn
-	attr_accessor :moveset, :x_position, :y_position, :possible_moves, :icon, :has_moved, :double_stepped, :color
+class Pawn < Piece
+	attr_accessor :has_moved, :double_stepped
 
 	def initialize(position, is_white)
 		@moveset = {
@@ -10,13 +10,9 @@ class Pawn
 			right_diagonal: [1, 1],
 			left_diagonal: [1, -1],
 		}
-		@x_position = position[0]
-		@y_position = position[1]
-		@possible_moves = []
-		@icon = is_white ? "♟" : "♙"
 		@has_moved = false
 		@double_stepped = false
-		@color =  is_white ? "white" : "black"
+		super
 		@moveset.keys.each { |move_type| @moveset[move_type][0] *= -1} if @color == "white"
 	end
 
@@ -41,7 +37,7 @@ class Pawn
 		end
 	end
 
-	def add_en_passant(positions, x, y) # could probably add a ternary assignment operator for the x + (1)/(-1) logic to reduce a nested if
+	def add_en_passant(positions, x, y)
 		if positions[x][y].nil?
 			if @color == "white"
 				if positions[x + 1][y].instance_of?(Pawn) && positions[x + 1][y].double_stepped == true
