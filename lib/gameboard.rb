@@ -50,7 +50,7 @@ class GameBoard
 	def play
 		place_pieces
 		display
-		instructions
+		ChessText.instructions
 		get_names
 		display
 		turn_order
@@ -62,20 +62,9 @@ class GameBoard
 		system "cls"
 	end
 
-	def title
-		print " .d8888b.  888                                 
-d88P  Y88b 888                                 
-888    888 888                                 
-888        88888b.   .d88b.  .d8888b  .d8888b  
-888        888 \"88b d8P  Y8b 88K      88K      
-888    888 888  888 88888888 \"Y8888b. \"Y8888b. 
-Y88b  d88P 888  888 Y8b.          X88      X88 
- \"Y8888P\"  888  888  \"Y8888   88888P\'  88888P\' \n\n"
-	end
-
 	def display
 		clear
-		title
+		ChessText.title
 		top_row
 		square = 1
 		@positions.each_index do |row|
@@ -120,10 +109,6 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		puts "\n\n"
 	end
 
-	def instructions
-		print "Instructions at https://www.chess.com/learn-how-to-play-chess\n\n"
-	end
-
 	def get_names
 		@player1 = Player.new(1)
 		@player2 = Player.new(2)
@@ -145,7 +130,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 			display
 		end
 		@turn_counter -= 1
-		win(turn_player)
+		ChessText.win(turn_player)
 	end
 
 	def turn_player
@@ -156,7 +141,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		@turn_counter % 2 == 0 ? "black" : "white"
 	end
 
-	def turn # both turn and check_turn should be combined into one method, with the breaking condition perhaps yielding to a block with the necessary conditions
+	def turn
 		print "It's your turn, #{turn_player.name.bold}! What are you going to do?\n\n"
 		print "Notate your move in the form of: 'B1 to C3'\n> "
 
@@ -167,7 +152,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 			piece_position = convert([move[2], move[1]])
 			piece_move_position = convert([move[4], move[3]])
 			piece = @positions[piece_position[0]][piece_position[1]]
-			break if piece.possible_moves.include?(piece_move_position) && piece.color == turn_color
+			break if piece != nil && piece.possible_moves.include?(piece_move_position) && piece.color == turn_color
 			print "\nHmm.. That doesn't appear to be a valid move. Please try again:\n> "
 		end
 
@@ -196,7 +181,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		cache = clone_positions
 
 		move(current, new)
-		@positions.flatten.select { |square| !square.nil? && square.instance_of?(King) && square.color == turn_color }.each do |king| #turn_color is incorrect if coming from any_breaks_check
+		@positions.flatten.select { |square| !square.nil? && square.instance_of?(King) && square.color == turn_color }.each do |king|
 			breaks_check = true if king.in_check?(@positions) == false
 		end
 		@positions = cache
@@ -235,7 +220,7 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		end
 	end
 
-	def move(current, new) # this needs to be split into multiple methods
+	def move(current, new)
 		double_stepped = check_for_double_step(current, new) 
 
 		if en_passant?(current, new) 
@@ -271,8 +256,10 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 			end
 		end
 		temp = @positions[current[0]][current[1]]
-		temp.x_position = new[0]
-		temp.y_position = new[1]
+		if temp != nil
+			temp.x_position = new[0]
+			temp.y_position = new[1]
+		end
 			
 		@positions[current[0]][current[1]] = nil
 		@positions[new[0]][new[1]] = temp
@@ -324,14 +311,13 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 		promote_pawn
 	end
 
-	def promote(pawn) # this needs to be refactored
+	def promote(pawn)
 		acceptable_input = ["queen", "knight", "rook", "bishop"]
-		print "\nYour Pawn has reached the end of the board, #{turn_player.name.bold}!\n\n"
-		print "You can promote your Pawn into a Queen, Knight, Rook, or Bishop. Please input which:\n> "
+		ChessText.promotion
 		promotion = gets.chomp.downcase
 
 		until acceptable_input.include?(promotion)
-			print "\n That doesn't appear to be something you can promote a pawn to.. Try again:\n> "
+			ChessText.invalid_promotion
 			promotion = gets.chomp.downcase
 		end
 
@@ -370,42 +356,41 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 	def any_breaks_checks?
 		@positions.flatten.select { |square| !square.nil? && square.color == turn_color }.each do |piece|
 			piece.possible_moves.each do |move|
-				if breaks_check?([piece.x_position, piece.y_position], move) #testing
+				if breaks_check?([piece.x_position, piece.y_position], move)
 					return true
 				end
 			end
 		end
 		false
 	end
+end
 
-	def win(player)
+class ChessText
+		def ChessText.title
+		print " .d8888b.  888                                 
+d88P  Y88b 888                                 
+888    888 888                                 
+888        88888b.   .d88b.  .d8888b  .d8888b  
+888        888 \"88b d8P  Y8b 88K      88K      
+888    888 888  888 88888888 \"Y8888b. \"Y8888b. 
+Y88b  d88P 888  888 Y8b.          X88      X88 
+ \"Y8888P\"  888  888  \"Y8888   88888P\'  88888P\' \n\n"
+	end
+
+	def ChessText.instructions
+		print "Instructions at https://www.chess.com/learn-how-to-play-chess\n\n"
+	end
+
+	def ChessText.win(player)
 		puts "Congratulations, #{player.name.bold}! You are the Champion!"
 	end
 
-# none of this works at the moment
-	def save
-		yaml = YAML.dump(data)
-
-		File.open("save_data.yaml", "w") { |file| file.puts yaml }
-
-		puts "Your game has been saved!\n\n"
-
-		exit
+	def ChessText.promotion_prompt
+		print "\nYour Pawn has reached the end of the board, #{turn_player.name.bold}!\n\n"
+		print "You can promote your Pawn into a Queen, Knight, Rook, or Bishop. Please input which:\n> "
 	end
 
-	def data
-		{ "positions" 		=> @bositions,
-			"player1" 			=> @player1,
-			"player2" 			=> @player2,
-			"turn_counter" 	=> @turn_counter }
-	end
-
-	def load
-		yaml = YAML.load(File.open(save_data))
-
-		@positions 		= yaml["positions"]
-		@player1 			= yaml["player1"]
-		@player2 			= yaml["player2"]
-		@turn_counter = yaml["turn_counter"]
+	def ChessText.invalid_promotion
+		print "\n That doesn't appear to be something you can promote a pawn to.. Try again:\n> "
 	end
 end
