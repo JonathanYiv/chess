@@ -1,4 +1,5 @@
 require_relative "../board.rb"
+require_relative "piece.rb"
 
 class Knight < Piece
 	def initialize(position, is_white)

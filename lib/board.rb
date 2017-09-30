@@ -7,6 +7,12 @@ class Board
 	end
 
 	def place_pieces
+		place_white_row
+		place_black_row
+		place_pawns
+	end
+
+	def place_white_row
 		@positions[7][0] = Rook.new([7,0], true)
 		@positions[7][1] = Knight.new([7,1], true)
 		@positions[7][2] = Bishop.new([7,2], true)
@@ -15,11 +21,9 @@ class Board
 		@positions[7][5] = Bishop.new([7,5], true)
 		@positions[7][6] = Knight.new([7,6], true)
 		@positions[7][7] = Rook.new([7,7], true)
+	end
 
-		0.upto(7) do |x|
-			@positions[6][x] = Pawn.new([6,x], true)
-		end
-
+	def place_black_row
 		@positions[0][0] = Rook.new([0,0], false)
 		@positions[0][1] = Knight.new([0,1], false)
 		@positions[0][2] = Bishop.new([0,2], false)
@@ -28,7 +32,20 @@ class Board
 		@positions[0][5] = Bishop.new([0,5], false)
 		@positions[0][6] = Knight.new([0,6], false)
 		@positions[0][7] = Rook.new([0,7], false)
+	end
 
+	def place_pawns
+		place_white_pawns
+		place_black_pawns
+	end
+
+	def place_white_pawns
+		0.upto(7) do |x|
+			@positions[6][x] = Pawn.new([6,x], true)
+		end
+	end
+
+	def place_black_pawns
 		0.upto(7) do |x|
 			@positions[1][x] = Pawn.new([1,x], false)
 		end
@@ -37,24 +54,9 @@ class Board
 	def display
 		clear
 		ChessText.title
-		top_row
-		square = 1
-		@positions.each_index do |row|
-			print "#{8 - row}  "
-			@positions[row].each_index do |column|
-				if @positions[row][column] == nil
-					print square % 2 == 0 ? "│    " : "│#{"    ".bg_black}" 
-					square += 1
-				else
-					print square % 2 == 0 ? "│ #{@positions[row][column].icon}  " : "│#{" #{@positions[row][column].icon}  ".bg_black}"
-					square += 1
-				end
-			end
-			square += 1
-			puts "│"
-			row == 7 ? bottom_row : rows
-		end
-		x_axis
+		display_top_row
+		display_pieces
+		display_x_axis
 	end
 
 	def clear
@@ -62,19 +64,37 @@ class Board
 		system "cls"
 	end
 
-	def top_row
+	def display_top_row
 		puts "   ┌────┬────┬────┬────┬────┬────┬────┬────┐"
 	end
 
-	def rows
+	def display_pieces
+		square = 1
+		@positions.each_index do |row|
+			print "#{8 - row}  "
+			@positions[row].each_index do |column|
+				if @positions[row][column] == nil
+					print square % 2 == 0 ? "│    " : "│#{"    ".bg_black}" 
+				else
+					print square % 2 == 0 ? "│ #{@positions[row][column].icon}  " : "│#{" #{@positions[row][column].icon}  ".bg_black}"
+				end
+				square += 1
+			end
+			square += 1
+			puts "│"
+			row == 7 ? display_bottom_row : display_rows
+		end
+	end
+
+	def display_rows
 		puts "   ├────┼────┼────┼────┼────┼────┼────┼────┤"
 	end
 
-	def bottom_row
+	def display_bottom_row
 		puts "   └────┴────┴────┴────┴────┴────┴────┴────┘"
 	end
 
-	def x_axis
+	def display_x_axis
 		puts "     a    b    c    d    e    f    g    h  \n\n"
 	end
 
@@ -95,7 +115,7 @@ class Board
 	end
 
 	def Board.includes?(x, y)
-		within_seven?(x) and within_seven?(y)
+		within_seven?(x) && within_seven?(y)
 	end
 
 	def Board.within_seven?(number)

@@ -9,7 +9,6 @@ require_relative "string.rb"
 require_relative "chesstext.rb"
 require_relative "board.rb"
 require "pry"
-require "yaml"
 
 class Game
 	attr_accessor :positions, :player1, :player2, :turn_counter, :board
