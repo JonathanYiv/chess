@@ -7,6 +7,7 @@ require_relative "king.rb"
 require_relative "pawn.rb"
 require_relative "string.rb"
 require_relative "chesstext.rb"
+require_relative "board.rb"
 require "pry"
 require "yaml"
 
@@ -14,92 +15,19 @@ class Game
 	attr_accessor :positions, :player1, :player2, :turn_counter
 
 	def initialize
-		@positions = Array.new(8) { Array.new(8, nil) }
+		@board = Board.new
 		@player1 = nil
 		@player2 = nil
 		@turn_counter = 0
 	end
 
-	def place_pieces
-		@positions[7][0] = Rook.new([7,0], true)
-		@positions[7][1] = Knight.new([7,1], true)
-		@positions[7][2] = Bishop.new([7,2], true)
-		@positions[7][3] = Queen.new([7,3], true)
-		@positions[7][4] = King.new([7,4], true)
-		@positions[7][5] = Bishop.new([7,5], true)
-		@positions[7][6] = Knight.new([7,6], true)
-		@positions[7][7] = Rook.new([7,7], true)
-
-		0.upto(7) do |x|
-			@positions[6][x] = Pawn.new([6,x], true)
-		end
-
-		@positions[0][0] = Rook.new([0,0], false)
-		@positions[0][1] = Knight.new([0,1], false)
-		@positions[0][2] = Bishop.new([0,2], false)
-		@positions[0][3] = Queen.new([0,3], false)
-		@positions[0][4] = King.new([0,4], false)
-		@positions[0][5] = Bishop.new([0,5], false)
-		@positions[0][6] = Knight.new([0,6], false)
-		@positions[0][7] = Rook.new([0,7], false)
-
-		0.upto(7) do |x|
-			@positions[1][x] = Pawn.new([1,x], false)
-		end
-	end
-
 	def play
-		place_pieces
-		display
+		@board.display
 		ChessText.instructions
 		get_names
-		display
+		@board.display
 		turn_order
 		turns
-	end
-
-	def clear
-		system "clear"
-		system "cls"
-	end
-
-	def display
-		clear
-		ChessText.title
-		top_row
-		square = 1
-		@positions.each_index do |row|
-			print "#{8 - row}  "
-			@positions[row].each_index do |column|
-				if @positions[row][column] == nil
-					print square % 2 == 0 ? "│    " : "│#{"    ".bg_black}" 
-					square += 1
-				else
-					print square % 2 == 0 ? "│ #{@positions[row][column].icon}  " : "│#{" #{@positions[row][column].icon}  ".bg_black}"
-					square += 1
-				end
-			end
-			square += 1
-			puts "│"
-			row == 7 ? bottom_row : rows
-		end
-		x_axis
-	end
-
-	def top_row
-		puts "   ┌────┬────┬────┬────┬────┬────┬────┬────┐"
-	end
-
-	def rows
-		puts "   ├────┼────┼────┼────┼────┼────┼────┼────┤"
-	end
-
-	def bottom_row
-		puts "   └────┴────┴────┴────┴────┴────┴────┴────┘"
-	end
-
-	def x_axis
-		puts "     a    b    c    d    e    f    g    h  \n\n"
 	end
 
 	def get_names
@@ -108,8 +36,8 @@ class Game
 	end
 
 	def turn_order
-		print "#{@player1.name.bold}'s soldiers are on the #{"light".italic} side and will go first!\n\n"
-		print "#{@player2.name.bold}'s soldiers are on the #{"dark".italic} side and will go second!\n\n\n"
+		print "#{@player1}'s soldiers are on the #{"light".italic} side and will go first!\n\n"
+		print "#{@player2}'s soldiers are on the #{"dark".italic} side and will go second!\n\n\n"
 	end
 
 	def turns
@@ -120,32 +48,32 @@ class Game
 			else
 				turn
 			end
-			display
+			@board.display
 		end
 		@turn_counter -= 1
-		ChessText.win(turn_player)
+		ChessText.win(current_player)
 	end
 
-	def turn_player
+	def current_player
 		@turn_counter % 2 == 0 ? @player2 : @player1
 	end
 
-	def turn_color
+	def current_color
 		@turn_counter % 2 == 0 ? "black" : "white"
 	end
 
 	def turn
-		print "It's your turn, #{turn_player}! What are you going to do?\n\n"
+		print "It's your turn, #{current_player}! What are you going to do?\n\n"
 		print "Notate your move in the form of: 'B1 to C3'\n> "
 
 		move, piece_position, piece_move_position = nil, nil, nil
 
 		loop do
-			move = turn_player.get_move
+			move = current_player.get_move
 			piece_position = convert([move[2], move[1]])
 			piece_move_position = convert([move[4], move[3]])
-			piece = @positions[piece_position[0]][piece_position[1]]
-			break if piece != nil && piece.possible_moves.include?(piece_move_position) && piece.color == turn_color
+			piece = @board.positions[piece_position[0]][piece_position[1]]
+			break if piece != nil && piece.possible_moves.include?(piece_move_position) && piece.color == current_color
 			print "\nHmm.. That doesn't appear to be a valid move. Please try again:\n> "
 		end
 
@@ -153,16 +81,16 @@ class Game
 	end
 
 	def check_turn
-		print "Your King is in check, #{turn_player}! You better do something!\n> "
+		print "Your King is in check, #{current_player}! You better do something!\n> "
 
 		move, piece_position, piece_move_position = nil, nil, nil
 
 		loop do
-			move = turn_player.get_move
+			move = current_player.get_move
 			piece_position = convert([move[2], move[1]])
 			piece_move_position = convert([move[4], move[3]])
-			piece = @positions[piece_position[0]][piece_position[1]]
-			break if piece.possible_moves.include?(piece_move_position) && piece.color == turn_color && breaks_check?(piece_position, piece_move_position) == true
+			piece = @board.positions[piece_position[0]][piece_position[1]]
+			break if piece.possible_moves.include?(piece_move_position) && piece.color == current_color && breaks_check?(piece_position, piece_move_position) == true
 			print "\nThat still leaves your King in check. Try again:\n> "
 		end
 
@@ -174,10 +102,10 @@ class Game
 		cache = clone_positions
 
 		move(current, new)
-		@positions.flatten.select { |square| !square.nil? && square.instance_of?(King) && square.color == turn_color }.each do |king|
-			breaks_check = true if king.in_check?(@positions) == false
+		@board.positions.flatten.select { |square| !square.nil? && square.instance_of?(King) && square.color == current_color }.each do |king|
+			breaks_check = true if king.in_check?(@board.positions) == false
 		end
-		@positions = cache
+		@board.positions = cache
 		update_possible_moves
 		breaks_check
 	end
@@ -186,7 +114,7 @@ class Game
 		cache = Array.new(8) { Array.new(8, nil) }
 		0.upto(7) do |x|
 			0.upto(7) do |y|
-				original = @positions[x][y]
+				original = @board.positions[x][y]
 				copy = original.nil? ? nil : original.class.new([x, y], original.color == "white")
 				cache[x][y] = copy
 				if original.instance_of?(King) || original.instance_of?(Pawn) || original.instance_of?(Rook)
@@ -205,11 +133,11 @@ class Game
 	end
 
 	def update_possible_moves
-		@positions.flatten.each do |piece|
-			piece&.find_possible_moves(@positions) unless piece.instance_of?(King)
+		@board.positions.flatten.each do |piece|
+			piece&.find_possible_moves(@board.positions) unless piece.instance_of?(King)
 		end
-		@positions.flatten.each do |piece|
-			piece&.find_possible_moves(@positions) if piece.instance_of?(King)
+		@board.positions.flatten.each do |piece|
+			piece&.find_possible_moves(@board.positions) if piece.instance_of?(King)
 		end
 	end
 
@@ -217,45 +145,45 @@ class Game
 		double_stepped = check_for_double_step(current, new) 
 
 		if en_passant?(current, new) 
-			@positions[current[0]][new[1]] = nil
+			@board.positions[current[0]][new[1]] = nil
 		end
 
 		if castle?(current, new)
 			case new
 			when [7, 2]
-				temp = @positions[7][0]
-				@positions[7][0] = nil
-				@positions[7][3] = temp
+				temp = @board.positions[7][0]
+				@board.positions[7][0] = nil
+				@board.positions[7][3] = temp
 				temp.x_position = 7
 				temp.y_position = 3
 			when [7, 6]
-				temp = @positions[7][7]
-				@positions[7][7] = nil
-				@positions[7][5] = temp
+				temp = @board.positions[7][7]
+				@board.positions[7][7] = nil
+				@board.positions[7][5] = temp
 				temp.x_position = 7
 				temp.y_position = 5
 			when [0, 2]
-				temp = @positions[0][0]
-				@positions[0][0] = nil
-				@positions[0][3] = temp
+				temp = @board.positions[0][0]
+				@board.positions[0][0] = nil
+				@board.positions[0][3] = temp
 				temp.x_position = 0
 				temp.y_position = 3
 			when [0, 6]
-				temp = @positions[0][7]
-				@positions[0][7] = nil
-				@positions[0][5] = temp
+				temp = @board.positions[0][7]
+				@board.positions[0][7] = nil
+				@board.positions[0][5] = temp
 				temp.x_position = 0
 				temp.y_position = 5
 			end
 		end
-		temp = @positions[current[0]][current[1]]
+		temp = @board.positions[current[0]][current[1]]
 		if temp != nil
 			temp.x_position = new[0]
 			temp.y_position = new[1]
 		end
 			
-		@positions[current[0]][current[1]] = nil
-		@positions[new[0]][new[1]] = temp
+		@board.positions[current[0]][current[1]] = nil
+		@board.positions[new[0]][new[1]] = temp
 
 		temp.has_moved = true if temp.instance_of?(King) || temp.instance_of?(Rook) || temp.instance_of?(Pawn)
 
@@ -270,7 +198,7 @@ class Game
 	end
 
 	def check_for_double_step(current, new)
-		piece = @positions[current[0]][current[1]]
+		piece = @board.positions[current[0]][current[1]]
 		if piece.instance_of?(Pawn) && (piece.x_position - new[0]).abs == 2
 			return true
 		end
@@ -279,7 +207,7 @@ class Game
 
 	def castle?(current, new)
 		castle_moves = [[7, 2], [7, 6], [0, 2], [0, 6]]
-		piece = @positions[current[0]][current[1]]
+		piece = @board.positions[current[0]][current[1]]
 		if piece.instance_of?(King) && piece.has_moved == false && castle_moves.include?(new)
 			return true
 		end
@@ -287,9 +215,9 @@ class Game
 	end
 
 	def en_passant?(current, new) 
-		piece = @positions[current[0]][current[1]]
+		piece = @board.positions[current[0]][current[1]]
 
-		if piece.instance_of?(Pawn) && @positions[new[0]][new[1]].nil? && current[1] != new[1]
+		if piece.instance_of?(Pawn) && @board.positions[new[0]][new[1]].nil? && current[1] != new[1]
 			return true
 		end
 		false
@@ -298,15 +226,15 @@ class Game
 	def promote?
 		promote_pawn = nil
 		0.upto(7) do |x|
-			promote_pawn = @positions[0][x] if @positions[0][x].instance_of?(Pawn)
-			promote_pawn = @positions[7][x] if @positions[7][x].instance_of?(Pawn)
+			promote_pawn = @board.positions[0][x] if @board.positions[0][x].instance_of?(Pawn)
+			promote_pawn = @board.positions[7][x] if @board.positions[7][x].instance_of?(Pawn)
 		end
 		promote_pawn
 	end
 
 	def promote(pawn)
 		acceptable_input = ["queen", "knight", "rook", "bishop"]
-		ChessText.promotion_prompt(turn_player)
+		ChessText.promotion_prompt(current_player)
 		promotion = gets.chomp.downcase
 
 		until acceptable_input.include?(promotion)
@@ -316,20 +244,20 @@ class Game
 
 		case promotion
 		when "queen"
-			@positions[pawn.x_position][pawn.y_position] = Queen.new([pawn.x_position, pawn.y_position], pawn.color)
+			@board.positions[pawn.x_position][pawn.y_position] = Queen.new([pawn.x_position, pawn.y_position], pawn.color)
 		when "knight"
-			@positions[pawn.x_position][pawn.y_position] = Knight.new([pawn.x_position, pawn.y_position], pawn.color)
+			@board.positions[pawn.x_position][pawn.y_position] = Knight.new([pawn.x_position, pawn.y_position], pawn.color)
 		when "rook"
-			@positions[pawn.x_position][pawn.y_position] = Rook.new([pawn.x_position, pawn.y_position], pawn.color)
+			@board.positions[pawn.x_position][pawn.y_position] = Rook.new([pawn.x_position, pawn.y_position], pawn.color)
 		when "bishop"
-			@positions[pawn.x_position][pawn.y_position] = Bishop.new([pawn.x_position, pawn.y_position], pawn.color)
+			@board.positions[pawn.x_position][pawn.y_position] = Bishop.new([pawn.x_position, pawn.y_position], pawn.color)
 		end
 	end
 
 	def check?
-		color = turn_color
-		@positions.flatten.select { |square| square.instance_of?(King) && square.color == color }.each do |king|
-			if king.in_check?(@positions)
+		color = current_color
+		@board.positions.flatten.select { |square| square.instance_of?(King) && square.color == color }.each do |king|
+			if king.in_check?(@board.positions)
 				return true
 			end
 		end
@@ -338,8 +266,8 @@ class Game
 
 	def checkmate?
 		@turn_counter += 1
-		@positions.flatten.select {|square| square.instance_of?(King) && square.color == turn_color }.each do |king|
-			return false if !king.in_check?(@positions)
+		@board.positions.flatten.select {|square| square.instance_of?(King) && square.color == current_color }.each do |king|
+			return false if !king.in_check?(@board.positions)
 			return false if any_breaks_checks? == true
 			return false if !king.possible_moves.empty?
 		end
@@ -347,7 +275,7 @@ class Game
 	end
 
 	def any_breaks_checks?
-		@positions.flatten.select { |square| !square.nil? && square.color == turn_color }.each do |piece|
+		@board.positions.flatten.select { |square| !square.nil? && square.color == current_color }.each do |piece|
 			piece.possible_moves.each do |move|
 				if breaks_check?([piece.x_position, piece.y_position], move)
 					return true
