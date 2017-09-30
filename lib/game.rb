@@ -24,13 +24,13 @@ class Game
 	def play
 		@board.display
 		ChessText.instructions
-		get_names
+		create_players
 		@board.display
 		turn_order
 		turns
 	end
 
-	def get_names
+	def create_players
 		@player1 = Player.new(1)
 		@player2 = Player.new(2)
 	end
