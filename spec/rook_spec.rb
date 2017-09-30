@@ -1,4 +1,4 @@
-require "rook"
+require "pieces/rook"
 require "game"
 
 describe Rook do

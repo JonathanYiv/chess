@@ -1,4 +1,4 @@
-require "pawn"
+require "pieces/pawn"
 require "game"
 
 describe Pawn do 

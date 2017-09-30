@@ -1,4 +1,4 @@
-require "queen"
+require "pieces/queen"
 require "game"
 
 describe Queen do

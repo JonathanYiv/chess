@@ -1,4 +1,4 @@
-require "king"
+require "pieces/king"
 require "game"
 
 describe King do

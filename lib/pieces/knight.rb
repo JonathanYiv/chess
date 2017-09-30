@@ -1,4 +1,4 @@
-require_relative "board.rb"
+require_relative "../board.rb"
 
 class Knight
 	attr_accessor :moveset, :x_position, :y_position, :icon, :possible_moves, :color

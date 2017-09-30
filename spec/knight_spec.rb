@@ -1,4 +1,4 @@
-require "knight"
+require "pieces/knight"
 require "game"
 
 describe Knight do 

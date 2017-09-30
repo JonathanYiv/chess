@@ -1,4 +1,4 @@
-require_relative "board.rb"
+require_relative "../board.rb"
 
 class King
 	attr_accessor :moveset, :x_position, :y_position, :possible_moves, :icon, :has_moved, :color

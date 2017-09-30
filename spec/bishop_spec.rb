@@ -1,4 +1,4 @@
-require "bishop"
+require "pieces/bishop"
 require "game"
 
 describe Bishop do
