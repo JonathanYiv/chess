@@ -87,27 +87,19 @@ class Game
 	end
 
 	def top_row
-		print "   ┌────"
-		7.times.each { print "┬────" }
-		puts "┐"
+		puts "   ┌────┬────┬────┬────┬────┬────┬────┬────┐"
 	end
 
 	def rows
-		print "   ├────"
-		7.times.each { print "┼────" }
-		puts "┤"
+		puts "   ├────┼────┼────┼────┼────┼────┼────┼────┤"
 	end
 
 	def bottom_row
-		print "   └────"
-		7.times.each { print "┴────" }
-		puts "┘"
+		puts "   └────┴────┴────┴────┴────┴────┴────┴────┘"
 	end
 
 	def x_axis
-		print "   "
-		("a".."h").each { |letter| print "  #{letter}  "}
-		puts "\n\n"
+		puts "     a    b    c    d    e    f    g    h  \n\n"
 	end
 
 	def get_names
