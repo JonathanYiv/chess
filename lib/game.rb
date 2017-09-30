@@ -99,7 +99,7 @@ class Game
 
 	def breaks_check?(current, new)
 		breaks_check = false
-		cache = clone_positions
+		cache = @board.clone_positions
 
 		move(current, new)
 		@board.positions.flatten.select { |square| !square.nil? && square.instance_of?(King) && square.color == current_color }.each do |king|
@@ -108,22 +108,6 @@ class Game
 		@board.positions = cache
 		update_possible_moves
 		breaks_check
-	end
-
-	def clone_positions
-		cache = Array.new(8) { Array.new(8, nil) }
-		0.upto(7) do |x|
-			0.upto(7) do |y|
-				original = @board.positions[x][y]
-				copy = original.nil? ? nil : original.class.new([x, y], original.color == "white")
-				cache[x][y] = copy
-				if original.instance_of?(King) || original.instance_of?(Pawn) || original.instance_of?(Rook)
-					copy.has_moved = original.has_moved
-					copy.double_stepped = original.double_stepped if original.instance_of?(Pawn)
-				end
-			end
-		end
-		cache
 	end
 
 	def convert(array)
