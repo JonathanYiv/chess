@@ -13,7 +13,7 @@ Open your Terminal/Command Line. Navigate to the directory where your version wi
 ```
 $ git clone https://github.com/JonathanYiv/chess.git
 $ cd chess
-$ ruby lib/game.rb
+$ ruby chess.rb
 ```
 
 ## Pre-Project Thoughts
