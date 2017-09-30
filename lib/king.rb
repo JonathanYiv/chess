@@ -31,6 +31,7 @@ class King
 
 			if Board.includes?(x, y)
 
+=begin
 				test_positions = Array.new(8) { Array.new(8, nil) }
 				0.upto(7) do |x|
 					0.upto(7) do |y|
@@ -43,6 +44,9 @@ class King
 						end
 					end
 				end
+=end
+
+				test_positions = Board.clone(positions)
 
 
 				test_positions[@x_position][@y_position] = nil

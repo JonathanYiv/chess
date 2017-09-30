@@ -12,7 +12,7 @@ require "pry"
 require "yaml"
 
 class Game
-	attr_accessor :positions, :player1, :player2, :turn_counter
+	attr_accessor :positions, :player1, :player2, :turn_counter, :board
 
 	def initialize
 		@board = Board.new
@@ -99,8 +99,7 @@ class Game
 
 	def breaks_check?(current, new)
 		breaks_check = false
-		cache = @board.clone_positions
-		#cache = Board.clone(@board.positions)
+		cache = Board.clone(@board.positions)
 
 		move(current, new)
 		@board.positions.flatten.select { |square| !square.nil? && square.instance_of?(King) && square.color == current_color }.each do |king|
