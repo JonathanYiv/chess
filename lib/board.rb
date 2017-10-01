@@ -54,8 +54,9 @@ class Board
 	def display
 		clear
 		ChessText.title
-		display_top_row
-		display_pieces
+		display_top_border
+		display_rows
+		display_bottom_border
 		display_x_axis
 	end
 
@@ -64,33 +65,37 @@ class Board
 		system "cls"
 	end
 
-	def display_top_row
+	def display_top_border
 		puts "   ┌────┬────┬────┬────┬────┬────┬────┬────┐"
 	end
 
-	def display_pieces
-		square = 1
-		@positions.each_index do |row|
-			print "#{8 - row}  "
-			@positions[row].each_index do |column|
-				if @positions[row][column] == nil
-					print square % 2 == 0 ? "│    " : "│#{"    ".bg_black}" 
-				else
-					print square % 2 == 0 ? "│ #{@positions[row][column].icon}  " : "│#{" #{@positions[row][column].icon}  ".bg_black}"
-				end
-				square += 1
-			end
-			square += 1
-			puts "│"
-			row == 7 ? display_bottom_row : display_rows
+	def display_rows
+		(1..7).each do |row_number|
+			display_row(row_number)
+			display_separator
 		end
+		display_row(8)
 	end
 
-	def display_rows
+	def display_row(number)
+		square = number % 2 == 0 ? 0 : 1
+		print "#{number}  "
+		@positions[number - 1].each do |position|
+			if position.nil?
+				print square % 2 == 0 ? "│    " : "│#{"    ".bg_black}" 
+			else
+				print square % 2 == 0 ? "│ #{position.icon}  " : "│#{" #{position.icon}  ".bg_black}"
+			end
+			square += 1
+		end
+		puts "│"
+	end
+
+	def display_separator
 		puts "   ├────┼────┼────┼────┼────┼────┼────┼────┤"
 	end
 
-	def display_bottom_row
+	def display_bottom_border
 		puts "   └────┴────┴────┴────┴────┴────┴────┴────┘"
 	end
 
