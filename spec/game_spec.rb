@@ -5,6 +5,10 @@ describe Game do
   let(:game) { Game.new }
   let(:board) { Board.new(true) }
 
+  before do
+    game.board = board
+  end
+
   describe '#convert' do
     it 'converts string input into numerical input' do
       expect(game.convert(%w[8 a])).to eq([0, 0])
@@ -20,7 +24,7 @@ describe Game do
       expect(game.breaks_check?([3, 5], [5, 3])).to be true
     end
 
-    it 'can handle situation one' do
+    it 'can handle situation one', :focus => true do
       board.positions[0][0] = Rook.new([0, 0], false)
       board.positions[4][3] = Pawn.new([4, 3], true)
       board.positions[5][4] = Pawn.new([5, 4], true)
