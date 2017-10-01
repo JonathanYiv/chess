@@ -8,6 +8,7 @@ class Bishop < Piece
 			[-1,1],
 			[-1,-1]
 		]
+		@icon = is_white ? "♝" : "♗"
 		super
 	end
 end

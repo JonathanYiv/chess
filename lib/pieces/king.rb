@@ -14,6 +14,7 @@ class King < Piece
 			[-1,0],
 			[-1,-1]
 		]
+		@icon = is_white ? "♚" : "♔"
 		@has_moved = false
 		super
 	end

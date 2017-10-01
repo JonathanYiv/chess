@@ -12,6 +12,7 @@ class Queen < Piece
 			[1,0],
 			[-1,0]
 		]
+		@icon = is_white ? "♛" : "♕"
 		super
 	end
 end

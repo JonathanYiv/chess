@@ -12,6 +12,7 @@ class Pawn < Piece
 		}
 		@has_moved = false
 		@double_stepped = false
+		@icon = is_white ? "♟" : "♙"
 		super
 		@moveset.keys.each { |move_type| @moveset[move_type][0] *= -1} if @color == "white"
 	end

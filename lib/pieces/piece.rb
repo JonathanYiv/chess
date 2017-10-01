@@ -7,7 +7,6 @@ class Piece
 		@x_position = position[0]
 		@y_position = position[1]
 		@possible_moves = []
-		@icon = is_white ? "♝" : "♗"
 		@color =  is_white ? "white" : "black"
 	end
 

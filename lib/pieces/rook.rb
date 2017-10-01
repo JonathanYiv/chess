@@ -11,6 +11,7 @@ class Rook < Piece
 			[-1,0]
 		]
 		@has_moved = false
+		@icon = is_white ? "♜" : "♖"
 		super
 	end
 end

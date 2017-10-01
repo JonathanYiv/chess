@@ -13,6 +13,7 @@ class Knight < Piece
 			[+2,+1],
 			[+1,+2]
 		]
+		@icon = is_white ? "♞" : "♘"
 		super
 	end
 
