@@ -137,32 +137,32 @@ class Game
 				temp = @board.positions[7][0]
 				@board.positions[7][0] = nil
 				@board.positions[7][3] = temp
-				temp.x_position = 7
-				temp.y_position = 3
+				temp.x = 7
+				temp.y = 3
 			when [7, 6]
 				temp = @board.positions[7][7]
 				@board.positions[7][7] = nil
 				@board.positions[7][5] = temp
-				temp.x_position = 7
-				temp.y_position = 5
+				temp.x = 7
+				temp.y = 5
 			when [0, 2]
 				temp = @board.positions[0][0]
 				@board.positions[0][0] = nil
 				@board.positions[0][3] = temp
-				temp.x_position = 0
-				temp.y_position = 3
+				temp.x = 0
+				temp.y = 3
 			when [0, 6]
 				temp = @board.positions[0][7]
 				@board.positions[0][7] = nil
 				@board.positions[0][5] = temp
-				temp.x_position = 0
-				temp.y_position = 5
+				temp.x = 0
+				temp.y = 5
 			end
 		end
 		temp = @board.positions[current[0]][current[1]]
 		if temp != nil
-			temp.x_position = new[0]
-			temp.y_position = new[1]
+			temp.x = new[0]
+			temp.y = new[1]
 		end
 			
 		@board.positions[current[0]][current[1]] = nil
@@ -182,7 +182,7 @@ class Game
 
 	def check_for_double_step(current, new)
 		piece = @board.positions[current[0]][current[1]]
-		if piece.instance_of?(Pawn) && (piece.x_position - new[0]).abs == 2
+		if piece.instance_of?(Pawn) && (piece.x - new[0]).abs == 2
 			return true
 		end
 		false
@@ -227,13 +227,13 @@ class Game
 
 		case promotion
 		when "queen"
-			@board.positions[pawn.x_position][pawn.y_position] = Queen.new([pawn.x_position, pawn.y_position], pawn.color)
+			@board.positions[pawn.x][pawn.y] = Queen.new([pawn.x, pawn.y], pawn.color)
 		when "knight"
-			@board.positions[pawn.x_position][pawn.y_position] = Knight.new([pawn.x_position, pawn.y_position], pawn.color)
+			@board.positions[pawn.x][pawn.y] = Knight.new([pawn.x, pawn.y], pawn.color)
 		when "rook"
-			@board.positions[pawn.x_position][pawn.y_position] = Rook.new([pawn.x_position, pawn.y_position], pawn.color)
+			@board.positions[pawn.x][pawn.y] = Rook.new([pawn.x, pawn.y], pawn.color)
 		when "bishop"
-			@board.positions[pawn.x_position][pawn.y_position] = Bishop.new([pawn.x_position, pawn.y_position], pawn.color)
+			@board.positions[pawn.x][pawn.y] = Bishop.new([pawn.x, pawn.y], pawn.color)
 		end
 	end
 
@@ -260,7 +260,7 @@ class Game
 	def any_breaks_checks?
 		@board.positions.flatten.select { |square| !square.nil? && square.color == current_color }.each do |piece|
 			piece.possible_moves.each do |move|
-				if breaks_check?([piece.x_position, piece.y_position], move)
+				if breaks_check?([piece.x, piece.y], move)
 					return true
 				end
 			end

@@ -23,22 +23,22 @@ class King < Piece
 		@possible_moves = []
 
 		@moveset.each do |move|
-			x = @x_position + move[0]
-			y = @y_position + move[1]
+			x = @x + move[0]
+			y = @y + move[1]
 
 			if Board.includes?(x, y)
 
 				test_positions = Board.clone(positions)
 
-				test_positions[@x_position][@y_position] = nil
+				test_positions[@x][@y] = nil
 				test_king = King.new([x, y], @color == "white")
 				test_positions[x][y] = test_king
 
 				test_positions.flatten.select { |square| square !=  nil && square.color != color }.each do |piece| 
 					if piece.instance_of?(King)
 						piece.moveset.each do |test_move|
-							a = piece.x_position + test_move[0]
-							b = piece.y_position + test_move[1]
+							a = piece.x + test_move[0]
+							b = piece.y + test_move[1]
 
 							if Board.includes?(a, b)
 								piece.possible_moves << [a, b]
@@ -60,10 +60,10 @@ class King < Piece
 		positions.flatten.select { |piece| !piece.nil? && piece.color != @color }.each do |piece|
 			if piece.instance_of? Pawn
 				piece.possible_moves.each do |move|
-					in_check = true if move[1] != piece.y_position && move == [@x_position, @y_position]
+					in_check = true if move[1] != piece.y && move == [@x, @y]
 				end
 			else
-				in_check = true if piece.possible_moves.include?([@x_position, @y_position]) 
+				in_check = true if piece.possible_moves.include?([@x, @y]) 
 			end
 		end
 

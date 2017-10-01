@@ -21,8 +21,8 @@ class Knight < Piece
 		@possible_moves = []
 		
 		@moveset.each do |move|
-			x = @x_position + move[0]
-			y = @y_position + move[1]
+			x = @x + move[0]
+			y = @y + move[1]
 
 			if Board.includes?(x,y)
 				@possible_moves << [x, y] if positions[x][y].nil? || positions[x][y].color != @color
