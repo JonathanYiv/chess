@@ -1,5 +1,7 @@
+require_relative "string.rb"
+
 class ChessText
-		def ChessText.title
+	def ChessText.title
 		print " .d8888b.  888                                 
 d88P  Y88b 888                                 
 888    888 888                                 
@@ -16,6 +18,11 @@ Y88b  d88P 888  888 Y8b.          X88      X88
 
 	def ChessText.win(player)
 		puts "Congratulations, #{player}! You are the Champion!"
+	end
+
+	def ChessText.turn_order(player1, player2)
+		print "#{player1}'s soldiers are on the #{"light".italic} side and will go first!\n\n"
+		print "#{player2}'s soldiers are on the #{"dark".italic} side and will go second!\n\n\n"
 	end
 
 	def ChessText.promotion_prompt(player)

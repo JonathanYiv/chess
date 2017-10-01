@@ -25,18 +25,13 @@ class Game
 		ChessText.instructions
 		create_players
 		@board.display
-		turn_order
+		ChessText.turn_order(@player1, @player2)
 		turns
 	end
 
 	def create_players
 		@player1 = Player.new(1)
 		@player2 = Player.new(2)
-	end
-
-	def turn_order
-		print "#{@player1}'s soldiers are on the #{"light".italic} side and will go first!\n\n"
-		print "#{@player2}'s soldiers are on the #{"dark".italic} side and will go second!\n\n\n"
 	end
 
 	def turns
