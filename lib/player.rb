@@ -1,8 +1,7 @@
 require_relative "string.rb"
 
+# Players have a name and prompt for sanitized move input.
 class Player
-	attr_accessor :name
-
 	def initialize(number)
 		@name = get_name(number)
 	end
@@ -19,16 +18,20 @@ class Player
 	end
 
 	def get_move
-		move = gets.chomp.downcase
-		until move_format?(move)
+		move = input
+		until move_format =~ move
 			print "\nThat doesn't appear to be in the correct format. Remember: [Letter][Number] to [Letter][Number].\n> "
-			move = gets.chomp.downcase
+			move = input
 		end
-		/^([a-h])([1-8])\s{1}to\s{1}([a-h])([1-8])$/.match(move)
+		move_format.match(move)
 	end
 
-	def move_format?(string)
-		return false if /^([a-h])([1-8])\s{1}to\s{1}([a-h])([1-8])$/.match(string).nil?
-		true
-	end
+	private
+		def move_format
+			/^([a-h])([1-8])\s{1}to\s{1}([a-h])([1-8])$/
+		end
+
+		def input
+			gets.chomp.downcase
+		end
 end
