@@ -1,15 +1,16 @@
-require_relative "pieces/knight.rb"
-require_relative "player.rb"
-require_relative "pieces/queen.rb"
-require_relative "pieces/rook.rb"
-require_relative "pieces/bishop.rb"
-require_relative "pieces/king.rb"
-require_relative "pieces/pawn.rb"
-require_relative "string.rb"
-require_relative "chesstext.rb"
-require_relative "board.rb"
-require "pry"
+require_relative 'pieces/knight.rb'
+require_relative 'player.rb'
+require_relative 'pieces/queen.rb'
+require_relative 'pieces/rook.rb'
+require_relative 'pieces/bishop.rb'
+require_relative 'pieces/king.rb'
+require_relative 'pieces/pawn.rb'
+require_relative 'string.rb'
+require_relative 'chesstext.rb'
+require_relative 'board.rb'
+require 'pry'
 
+# Game runs the game entirely.
 class Game
   attr_accessor :positions, :player1, :player2, :turn_counter, :board
 

@@ -1,4 +1,4 @@
-require_relative "string.rb"
+require_relative 'string.rb'
 
 # Players have a name and prompt for sanitized move input.
 class Player
@@ -13,7 +13,7 @@ class Player
   def get_name(number)
     print "Hello Player #{number}! What is your name?\n> "
     @name = gets.chomp
-    puts ""
+    puts ''
     @name
   end
 
@@ -27,11 +27,12 @@ class Player
   end
 
   private
-    def move_format
-      /^([a-h])([1-8])\s{1}to\s{1}([a-h])([1-8])$/
-    end
 
-    def input
-      gets.chomp.downcase
-    end
+  def move_format
+    /^([a-h])([1-8])\s{1}to\s{1}([a-h])([1-8])$/
+  end
+
+  def input
+    gets.chomp.downcase
+  end
 end

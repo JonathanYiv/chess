@@ -1,25 +1,27 @@
-require_relative "../board.rb"
+require_relative '../board.rb'
 
+# Creates the King Piece with its unique moveset, 
+# moveset calculation algorithms, and icon
 class King < Piece
   attr_accessor :has_moved
 
   def initialize(position, is_white)
     @moveset = [
-      [1,1],
-      [1,0],
-      [1,-1],
+      [1, 1],
+      [1, 0],
+      [1, -1],
       [0, 1],
-      [0,-1],
-      [-1,1],
-      [-1,0],
-      [-1,-1]
+      [0, -1],
+      [-1, 1],
+      [-1, 0],
+      [-1, -1]
     ]
-    @icon = is_white ? "♚" : "♔"
+    @icon = is_white ? '♚' : '♔'
     @has_moved = false
     super
   end
 
-  def find_possible_moves(positions) # this method needs to be broken into multiple
+  def find_possible_moves(positions)
     @possible_moves = []
 
     @moveset.each do |move|
