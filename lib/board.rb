@@ -80,7 +80,7 @@ class Board
 
   def display_row(number)
     square = number.even? ? 0 : 1
-    print "#{number}  "
+    print "#{9 - number}  "
     @positions[number - 1].each do |position|
       if position.nil?
         print square.even? ? '│    ' : "│#{'    '.bg_black}"
